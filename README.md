@@ -1,17 +1,11 @@
-# BIP main repository
+# BIP Integration Test project
 
-This repository contains multiple Maven projects. In the perfect world it would
-be just one maven project to be built. Unfortunately, the world is not perfect 
-and you need to built the project separately. 
+BEFORE you can build this project you need to build multiple projects before. 
 
-Depending on the state of your environment (Maven repository) you may
-be able to skip some of the steps.
+org.bip.core project (read its README.md to know how to build it). 
+bip-engine-shared project from bip-engine-shared repo (read its README.md to know how to build it). 
+ 
+```
+mvn clean install
 
-Each project has its own README.md that you should look at to know how
-to build.
-
-org.bip.epfl
-org.bip.core
-bip-engine-shared
-org.bip.itest
-bip.usecase.cf
+```
