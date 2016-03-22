@@ -2,14 +2,19 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>org.bip</groupId>
-  
   <artifactId>org.bip.itest</artifactId>
-  
   <version>0.1.0-SNAPSHOT</version>
   
   <name>BIP :: Core :: Integration Tests</name>
-  
-  <description>It contains integration tests</description>
+
+	<scm>
+		<developerConnection>scm:git:git@git.xtech.io:bip/org.bip.itests.git</developerConnection>
+		<url>https://git.xtech.io/bip/org.bip.itests</url>
+		<tag>HEAD</tag>
+	</scm>
+
+
+	<description>It contains integration tests</description>
 
     <properties>
         <osgi.export></osgi.export>
@@ -33,6 +38,9 @@
 
 		</dependencies>
 	</dependencyManagement>
+
+
+
 
   <dependencies>
 
@@ -86,21 +94,59 @@
 
   </dependencies>
 
-<!--
-	<reporting>
-		<plugins>
-			<plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-report-plugin</artifactId>
-                <version>2.18.1</version>
-			</plugin>
-		</plugins>
-	</reporting>
--->
-
 	<build>
 
-		<plugins>
+        <pluginManagement>
+            <plugins>
+
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>2.3.5</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.1</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-project-info-reports-plugin</artifactId>
+                    <version>2.4</version>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-report-plugin</artifactId>
+                    <version>2.9</version>
+                    <executions>
+                        <execution>
+                            <id>html report for tests</id>
+                            <phase>site</phase>
+                            <goals>
+                                <goal>report</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <configuration>
+                        <argLine>-Xmx1024m</argLine>
+                    </configuration>
+                    <version>2.12.4</version>
+                </plugin>
+
+
+            </plugins>
+
+        </pluginManagement>
+
+        <plugins>
 
 			<plugin>
 				<groupId>org.apache.felix</groupId>
@@ -151,37 +197,4 @@
 		</plugins>
 	</build>
 
-
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-	<!-- Remote repositories declarations -->
-	<!-- ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ -->
-
-	<!--
-	    N.B.: These should be properly declared in a
-	    master POM or in a maven settings.xml file.
-	-->
-
-	<!--pluginRepositories>
-		<pluginRepository>
-			<id>maven-repo</id>
-			<name>maven repo</name>
-			<url>http://repo1.maven.org/maven2/</url>
-		</pluginRepository>
-
-	</pluginRepositories-->
-
-	<repositories>
-		<repository>
-			<id>maven-repo</id>
-			<name>maven repo</name>
-			<url>http://repo1.maven.org/maven2/</url>
-		</repository>
-		<repository>
-			<id>fusesource.releases</id>
-			<name>FuseSource Releases Repository</name>
-			<url>http://repo.fusesource.com/maven2/</url>
-		</repository>
-
-	</repositories>
-  
 </project>
