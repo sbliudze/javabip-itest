@@ -26,23 +26,21 @@ import org.bip.engine.factory.EngineFactory;
 import org.bip.exceptions.BIPException;
 import org.bip.glue.GlueBuilder;
 import org.bip.glue.TwoSynchronGlueBuilder;
-import org.bip.spec.CounterInterface;
-import org.bip.spec.MemoryMonitor;
 import org.bip.spec.PComponent;
 import org.bip.spec.PResizableBehaviorComponent;
 import org.bip.spec.PSSComponent;
 import org.bip.spec.QComponent;
 import org.bip.spec.RComponent;
 import org.bip.spec.RouteOnOffMonitor;
-import org.bip.spec.RouteTransitionCounter;
 import org.bip.spec.SwitchableRoute;
-import org.bip.spec.SwitchableRouteDataTransfers;
 import org.bip.spec.SwitchableRouteExecutableBehavior;
 import org.bip.spec.TestSpecEnforceableSpontaneous;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import akka.actor.ActorSystem;
 
@@ -94,7 +92,7 @@ public class IntegrationTests {
 	}
 
 	@Test
-	public void testHashCodePort() {
+	public void hashCodePortTest() {
 		PortBase portA = new PortImpl("p", PortType.enforceable, SwitchableRoute.class);
 		PortBase portB = new PortImpl("p", PortType.enforceable, SwitchableRoute.class);
 		PortBase portC = new PortImpl("p", PortType.enforceable, SwitchableRoute.class);
@@ -104,10 +102,104 @@ public class IntegrationTests {
 		assertEquals(portC.hashCode(), portD.hashCode());
 	}
 
+	
 	@Test
-	public void testBehaviourBuilding() throws BIPException {
+	public void routesTest() throws BIPException {
 
-		// get Glue object from xml file
+		/*
+		 * Test story.
+		 * 
+		 * The classical Switchable Routes example with three routes and one monitor,
+		 * without data transfer, specification through annotations.
+		 */
+
+		BIPGlue bipGlue = new TwoSynchronGlueBuilder() {
+			@Override
+			public void configure() {
+
+				synchron(SwitchableRoute.class, "on").to(RouteOnOffMonitor.class, "add");
+				synchron(SwitchableRoute.class, "finished").to(RouteOnOffMonitor.class, "rm");
+				
+				port(SwitchableRoute.class, "off").acceptsNothing();
+				port(SwitchableRoute.class, "off")	.requiresNothing();
+
+			}
+		}.build();
+
+
+		BIPEngine engine = engineFactory.create("myEngine", bipGlue);
+
+		SwitchableRoute route1 = new SwitchableRoute("1");
+		SwitchableRoute route2 = new SwitchableRoute("2");
+		SwitchableRoute route3 = new SwitchableRoute("3");
+		RouteOnOffMonitor routeOnOffMonitor = new RouteOnOffMonitor(2);
+
+		CamelContext camelContext = new DefaultCamelContext();
+		route1.setCamelContext(camelContext);
+		route2.setCamelContext(camelContext);
+		route3.setCamelContext(camelContext);
+		
+		final BIPActor executor1 = engine.register(route1, "1", true);
+		final BIPActor executor2 = engine.register(route2, "2", true);
+		final BIPActor executor3 = engine.register(route3, "3", true);
+
+		final BIPActor executorM = engine.register(routeOnOffMonitor, "monitor", true);
+		
+		final RoutePolicy routePolicy1 = createRoutePolicy(executor1);
+		final RoutePolicy routePolicy2 = createRoutePolicy(executor2); 
+		final RoutePolicy routePolicy3 = createRoutePolicy(executor3);
+		
+		RouteBuilder builder = new RouteBuilder() {
+
+			@Override
+			public void configure() throws Exception {
+				from("file:inputfolder1?delete=true").routeId("1")
+						.routePolicy(routePolicy1).to("file:outputfolder1");
+
+			from("file:inputfolder2?delete=true").routeId("2")
+						.routePolicy(routePolicy2).to("file:outputfolder2");
+
+				from("file:inputfolder3?delete=true").routeId("3")
+						.routePolicy(routePolicy3).to("file:outputfolder3");
+			}
+		};
+		camelContext.setAutoStartup(false);
+		try {
+			camelContext.addRoutes(builder);
+			camelContext.start();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		engine.specifyGlue(bipGlue);
+		engine.start();
+		engine.execute();
+		
+		try {
+			Thread.sleep(20000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		engine.stop();
+		engineFactory.destroy(engine);
+			
+		assertTrue("Route 1 has not made any transitions", route1.noOfEnforcedTransitions > 0);
+		assertTrue("Route 2 has not made any transitions", route2.noOfEnforcedTransitions > 0);
+		assertTrue("Route 3 has not made any transitions", route3.noOfEnforcedTransitions > 0);
+		
+	}
+	
+	@Test
+	public void behaviourBuildingTest() throws BIPException {
+
+		/*
+		 * Test story.
+		 * 
+		 * The classical Switchable Routes example with three routes and one monitor,
+		 * without data transfer, specification through provided behaviour.
+		 */
+		
 		BIPGlue bipGlue = createGlue("src/test/resources/bipGlueExecutableBehaviour.xml");
 
 		BIPEngine engine = engineFactory.create("myEngine", bipGlue);
@@ -183,8 +275,19 @@ public class IntegrationTests {
 	}
 
 	@Test
-	public void testEnforceableSpontaneous() throws BIPException {
+	public void enforceableSpontaneousTest() throws BIPException {
 
+		/*
+		 * Test story.
+		 * 
+		 * There is one component (TestSpecEnforceableSpontaneous) 
+		 * with one enforceable port p and one spontaneous port s. 
+		 * The two ports must be executed in alternation, one after the other.
+		 * A separate thread sends a fixed number of spontaneous events with a random frequency. 
+		 * The testing thread then sleeps every now and then until a certain number of sleeps has been reached.
+		 * By then the component must have executed all spontaneous transitions.
+		 */
+		
 		BIPGlue bipGlue = new GlueBuilder() {
 			@Override
 			public void configure() {
@@ -206,8 +309,6 @@ public class IntegrationTests {
 		final int noOfMilisecondsBetweenS = 1000;
 		final int executorLoopDelay = 1000;
 
-
-
 		TestSpecEnforceableSpontaneous component1 = new TestSpecEnforceableSpontaneous();
 
 		final BIPActor executor1 = engine.register(component1, "comp1", true);
@@ -227,7 +328,7 @@ public class IntegrationTests {
 				}
 
 			}
-		}, "SW2");
+		}, "SpontaneousSender");
 
 		engine.specifyGlue(bipGlue);
 		engine.start();
@@ -262,8 +363,21 @@ public class IntegrationTests {
 	}
 
 	@Test
-	public void testEnforceableSpontaneous2() throws BIPException {
+	public void enforceableSpontaneous2Test() throws BIPException {
 
+		/*
+		 * Test story.
+		 * 
+		 * There is one component (TestSpecEnforceableSpontaneous) 
+		 * with one enforceable port p and one spontaneous port s. 
+		 * The two ports must be executed in alternation, one after the other.
+		 * A separate thread sends a fixed number of spontaneous events with a random frequency. 
+		 * The testing thread then sleeps every now and then until a certain number of sleeps has been reached.
+		 * By then the component must have executed all spontaneous transitions.
+		 * 
+		 * The difference with the previous test is in sleep duration and frequency and that there is only one spontaneous transition.
+		 */
+		
 		BIPGlue bipGlue = new GlueBuilder() {
 			@Override
 			public void configure() {
@@ -282,10 +396,6 @@ public class IntegrationTests {
 		
 		final int noSpontaneousToBeSend = 1;
 		final int noOfMilisecondsBetweenS = 1000;
-
-
-
-		// bipGlue.toXML(System.out);
 		
 		TestSpecEnforceableSpontaneous component1 = new TestSpecEnforceableSpontaneous();
 
@@ -307,7 +417,7 @@ public class IntegrationTests {
 				}
 
 			}
-		}, "SW2");
+		}, "SpontaneousSender");
 
 		engine.specifyGlue(bipGlue);
 		engine.start();
@@ -348,13 +458,17 @@ public class IntegrationTests {
 	}
 
 	@Test	
-	public void testTernaryInteractionWithTrigger() throws BIPException {
+	public void ternaryInteractionWithTriggerTest() throws BIPException {
 
 		/*
 		 * Test story.
 		 * 
-		 * Rcomponent with its port triggers an interaction where pComponent (p
-		 * port) is synchronized with qComponent (q) port
+		 * Rcomponent with its port triggers an interaction where pComponent 
+		 * (p port) is synchronized with qComponent (q port)
+		 * 
+		 * In Q: s enables q, after executing q gets disabled.
+		 * In P: either p does not need to be globally enabled, 
+		 * or s enables p, after executing p gets disabled.
 		 * 
 		 * pComponent because it is initialized with false will not be able to
 		 * execute transitions with spontaneous events. What happens then with
@@ -474,15 +588,14 @@ public class IntegrationTests {
 	}
 
 	@Test
-	public void testWithMistakeInWiring() throws BIPException {
+	public void mistakeInWiringTest() throws BIPException {
 
 		/*
 		 * 
-		 * In place annotated with comment MISTAKE on purpose, we use the second
+		 * In place annotated with comment "MISTAKE on purpose", we use the second
 		 * time pComponent instead of q component to get
 		 * ArrayIndexOutOfBoundException.
 		 */
-
 
 		BIPGlue bipGlue = new GlueBuilder() {
 			@Override
@@ -577,7 +690,7 @@ public class IntegrationTests {
 	}
 
 	@Test
-	public void testMultipleSpontaneous() throws BIPException {
+	public void multipleSpontaneousTest() throws BIPException {
 
 		/*
 		 * Test story.
@@ -592,7 +705,7 @@ public class IntegrationTests {
 		 * R.s is also being sent so that R.r can be enabled.
 		 * 
 		 * [DONE] This test assumes a new treatment of spontaneous events,
-		 * namely that if one spontaneous event has arrived then if it guard
+		 * namely that if one spontaneous event has arrived then if its guard
 		 * evaluates to true (or guard does not exist) then there is no
 		 * exception if enforceable transition also evaluates to true.
 		 * Spontaneous transition will have a precedence over enforceable one.
@@ -756,8 +869,8 @@ public class IntegrationTests {
 	}
 
 	@Test
-	@Ignore // old ignore.
-	public void testBinaryInteractionLargeBehavior()
+	@Ignore // old ignore because the test is time-consuming
+	public void binaryInteractionLargeBehaviorTest()
 			throws NoSuchMethodException, BIPException {
 
 		/*
@@ -900,38 +1013,6 @@ public class IntegrationTests {
 		assertEquals(0, pComponent.pCounter);
 
 		assertEquals(noIterations, qComponent.qCounter);
-
-	}
-
-	@Test
-	public void testSynchronGlueBuilderSwitchableRoute() {
-
-		BIPGlue glue = new TwoSynchronGlueBuilder() {
-			@Override
-			public void configure() {
-
-				synchron(SwitchableRouteDataTransfers.class, "on").to(
-						MemoryMonitor.class, "add");
-				synchron(SwitchableRouteDataTransfers.class, "finished").to(
-						MemoryMonitor.class, "rm");
-				port(SwitchableRouteDataTransfers.class, "off")
-						.acceptsNothing();
-				port(SwitchableRouteDataTransfers.class, "off")
-						.requiresNothing();
-				data(SwitchableRouteDataTransfers.class,
-						"deltaMemoryOnTransition").to(MemoryMonitor.class,
-						"memoryUsage");
-
-			}
-
-		}.build();
-
-		assertEquals("Incorrect number of accepts ", 5, glue
-				.getAcceptConstraints().size());
-		assertEquals("Incorrect number of requires ", 5, glue
-				.getRequiresConstraints().size());
-		assertEquals("Incorrect number of data wires ", 1, glue.getDataWires()
-				.size());
 
 	}
 
