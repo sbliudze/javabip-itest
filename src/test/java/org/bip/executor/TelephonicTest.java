@@ -100,7 +100,6 @@ public class TelephonicTest {
 		
 		Checker checker = new Checker(n);
 		BIPActor checkerActor = engine.register(checker, "checker", true); 
-		
 
 		AgregatorClient client1 = new Client(1,n);
 		AgregatorClient client2 = new Client(2,n);
