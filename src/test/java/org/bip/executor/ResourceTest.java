@@ -19,6 +19,7 @@ import org.apache.camel.spi.RoutePolicy;
 import org.bip.api.BIPActor;
 import org.bip.api.BIPEngine;
 import org.bip.api.BIPGlue;
+import org.bip.api.ResourceManager;
 import org.bip.api.ResourceProvider;
 import org.bip.constraint.ConstraintSolver;
 import org.bip.constraint.PlaceVariable;
@@ -793,13 +794,13 @@ public class ResourceTest {
 		BIPActor actor1 = engine.register(aComp, "resourceNeeder1", true); 
 		BIPActor actor2 = engine.register(bComp, "resourceNeeder2", true); 
 		BIPActor allocatorActor = engine.register(alloc, "allocator", true); 
-		ResourceProvider memory = new Memory(256);
-		ResourceProvider processor = new Processor();
-		ResourceProvider bus = new Bus(129);
+		//ResourceProvider memory = new Memory(256);
+		//ResourceProvider processor = new Processor();
+		//ResourceProvider bus = new Bus(129);
 		
-		alloc.addResource(memory);
-		alloc.addResource(processor);
-		alloc.addResource(bus);
+		//alloc.addResource(memory);
+		//alloc.addResource(processor);
+		//alloc.addResource(bus);
 
 		engine.specifyGlue(bipGlue);
 
@@ -1179,8 +1180,17 @@ public class ResourceTest {
 		SimpleComponent c2 = new SimpleComponent(0);
 		ComponentNeedingResource c3 = new ComponentNeedingResource(10);
 		
+		ResourceManager processorManager = new Processor();
+		ResourceManager memoryManager = new Memory(256);
+		ResourceManager busManager = new Bus(256);
+		
 		BIPActor actor1 = engine.register(c1, "resRequester", true); 
 		BIPActor actor2 = engine.register(c2, "randomC", true); 
+		
+		BIPActor pResource = engine.register(processorManager, "processor", true); 
+		BIPActor mResource = engine.register(memoryManager, "memory", true);
+		BIPActor bResource = engine.register(busManager, "bus", true); 
+		
 		
 		engine.specifyGlue(bipGlue);
 
