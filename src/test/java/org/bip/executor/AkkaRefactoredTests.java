@@ -132,9 +132,9 @@ public class AkkaRefactoredTests {
 		BIPActor actor6 = engine.register(reader, "reader", true);
 		
 		engine.specifyGlue(bipGlue4SealableData);
-		engine.start();
+		//engine.start();
 
-		engine.execute();
+		//engine.execute();
 
 		try {
 			Thread.sleep(20000);
@@ -167,9 +167,9 @@ public class AkkaRefactoredTests {
 		BIPActor actor3 = engine.register(componentC, "compC", true);
 
 		engine.specifyGlue(bipGlue);
-		engine.start();
+		//engine.start();
 
-		engine.execute();
+		//engine.execute();
 
 		try {
 			Thread.sleep(5000);
@@ -240,9 +240,9 @@ public class AkkaRefactoredTests {
 		BIPActor actor3 = engine.register(componentC, "compC", true);
 
 		engine.specifyGlue(bipGlue);
-		engine.start();
+		//engine.start();
 
-		engine.execute();
+		//engine.execute();
 
 		try {
 			Thread.sleep(5000);
@@ -286,9 +286,9 @@ public class AkkaRefactoredTests {
 		BIPActor actor3 = engine.register(componentC, "compC", true);
 
 		engine.specifyGlue(bipGlue);
-		engine.start();
+		//engine.start();
 
-		engine.execute();
+		//engine.execute();
 
 		try {
 			Thread.sleep(5000);

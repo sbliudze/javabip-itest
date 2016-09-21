@@ -163,8 +163,8 @@ public class TelephonicTest {
 		client4 =  setClientRefs(clients, client4);
 		client5 =  setClientRefs(clients, client5);
 		
-		engine.start();
-		engine.execute();
+		//engine.start();
+		//engine.execute();
 
 		actor1.inform("notify");
 		actor2.inform("notify");
@@ -299,8 +299,8 @@ public class TelephonicTest {
 		client9 = setClientRefs(clients, client9);
 		client10 = setClientRefs(clients, client10);
 		
-		engine.start();
-		engine.execute();
+		//engine.start();
+		//engine.execute();
 
 		actor1.inform("notify");
 		actor2.inform("notify");
@@ -462,8 +462,8 @@ public class TelephonicTest {
 		client14 = setClientRefs(clients, client14);
 		client15 = setClientRefs(clients, client15);
 		
-		engine.start();
-		engine.execute();
+		//engine.start();
+		//engine.execute();
 
 		actor1.inform("notify");
 		actor2.inform("notify");
@@ -650,8 +650,8 @@ public class TelephonicTest {
 		client19 = setClientRefs(clients, client19);
 		client20 = setClientRefs(clients, client20);
 		
-		engine.start();
-		engine.execute();
+		//engine.start();
+		//engine.execute();
 
 		actor1.inform("notify");
 		actor2.inform("notify");
@@ -863,8 +863,8 @@ public class TelephonicTest {
 		client24 = setClientRefs(clients, client24);
 		client25 = setClientRefs(clients, client25);
 		
-		engine.start();
-		engine.execute();
+		//engine.start();
+		//engine.execute();
 
 		actor1.inform("notify");
 		actor2.inform("notify");
@@ -1101,8 +1101,8 @@ public class TelephonicTest {
 		client29 = setClientRefs(clients, client29);
 		client30 = setClientRefs(clients, client30);
 		
-		engine.start();
-		engine.execute();
+		//engine.start();
+		//engine.execute();
 
 		actor1.inform("notify");
 		actor2.inform("notify");
@@ -1362,8 +1362,8 @@ public class TelephonicTest {
 		client34 = setClientRefs(clients, client34);
 		client35 = setClientRefs(clients, client35);
 		
-		engine.start();
-		engine.execute();
+		//engine.start();
+		//engine.execute();
 
 		actor1.inform("notify");
 		actor2.inform("notify");
@@ -1648,8 +1648,8 @@ public class TelephonicTest {
 		client39 = setClientRefs(clients, client39);
 		client40 = setClientRefs(clients, client40);
 		
-		engine.start();
-		engine.execute();
+		//engine.start();
+		//engine.execute();
 
 		actor1.inform("notify");
 		actor2.inform("notify");
@@ -1961,8 +1961,8 @@ public class TelephonicTest {
 		client44 = setClientRefs(clients, client44);
 		client45 = setClientRefs(clients, client45);
 		
-		engine.start();
-		engine.execute();
+		//engine.start();
+		//engine.execute();
 
 		actor1.inform("notify");
 		actor2.inform("notify");
@@ -2301,8 +2301,8 @@ public class TelephonicTest {
 		client50 = setClientRefs(clients, client50);
 				
 		
-		engine.start();
-		engine.execute();
+		//engine.start();
+		//engine.execute();
 
 		actor1.inform("notify");
 		actor2.inform("notify");

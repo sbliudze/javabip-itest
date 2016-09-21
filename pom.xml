@@ -44,6 +44,12 @@
 
   <dependencies>
 
+  <dependency>
+  	<groupId>org.bip</groupId>
+  	<artifactId>org.bip.engine</artifactId>
+  	<version>0.1.0-SNAPSHOT</version>
+  </dependency>
+
 	<dependency>
 		<groupId>org.bip</groupId>
 		<artifactId>org.bip.api</artifactId>
@@ -176,6 +182,8 @@
    						<include>**/org/bip/executor/IntegrationTests.class</include>
  						<include>**/org/bip/executor/AkkaExecutorTests.class</include>						
 		 				<include>**/org/bip/executor/AkkaRefactoredTests.class</include>
+		 				<include>**/org/bip/dynamicity/DynamicityTests.class</include>
+                        <include>**/org/bip/dynamicity/ComponentPoolTests.class</include>
 <!--						<include>**/org/bip/executor/TelephonicTest.class</include>-->
  					</includes>
 
