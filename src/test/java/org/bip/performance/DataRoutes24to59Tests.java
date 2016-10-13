@@ -2175,7 +2175,7 @@ public class DataRoutes24to59Tests {
 		engine.specifyGlue(bipGlue);
 		engine.start();
 		engine.execute();
-		Thread.sleep(60000);
+		Thread.sleep(70000);
 	}
 
 	@Test
@@ -3412,7 +3412,7 @@ public class DataRoutes24to59Tests {
 		engine.specifyGlue(bipGlue);
 		engine.start();
 		engine.execute();
-		Thread.sleep(80000);
+		Thread.sleep(70000);
 	}
 
 	@Test
@@ -4113,7 +4113,7 @@ public class DataRoutes24to59Tests {
 		engine.specifyGlue(bipGlue);
 		engine.start();
 		engine.execute();
-		Thread.sleep(60000);
+		Thread.sleep(80000);
 	}
 	
 	private RoutePolicy createRoutePolicy(final BIPActor executor) {
@@ -4160,7 +4160,7 @@ public class DataRoutes24to59Tests {
 		for (i = 4; i < 100; i = i + 5) {
 
 			File file = new File(
-					"/home/mavridou/workspace/javaengineperformance/DataSwitchableRoutes/Time/100000Nodes/" + "SW" + i
+					"/home/alina/bip_clean/org.bip.itests/" + "SW" + i
 					+ ".txt");
 			FileReader fileReader = new FileReader(file);
 			BufferedReader bufferedReader = new BufferedReader(fileReader);
@@ -4190,7 +4190,7 @@ public class DataRoutes24to59Tests {
 		for (i = 4; i < 100; i = i + 5) {
 
 			File file = new File(
-					"/home/mavridou/workspace/javaengineperformance/DataSwitchableRoutes/Time/100000Nodes/" + "SW" + i
+					"/home/alina/bip_clean/org.bip.itests/" + "SW" + i
 					+ ".txt");
 			FileReader fileReader = new FileReader(file);
 			BufferedReader bufferedReader = new BufferedReader(fileReader);

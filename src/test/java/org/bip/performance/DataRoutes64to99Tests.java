@@ -799,7 +799,7 @@ public class DataRoutes64to99Tests {
 		engine.specifyGlue(bipGlue);
 		engine.start();
 		engine.execute();
-		Thread.sleep(80000);
+		Thread.sleep(90000);
 	}
 
 	@Test
@@ -1609,7 +1609,7 @@ public class DataRoutes64to99Tests {
 		engine.specifyGlue(bipGlue);
 		engine.start();
 		engine.execute();
-		Thread.sleep(80000);
+		Thread.sleep(100000);
 	}
 
 	@Test
@@ -2473,7 +2473,7 @@ public class DataRoutes64to99Tests {
 		engine.specifyGlue(bipGlue);
 		engine.start();
 		engine.execute();
-		Thread.sleep(80000);
+		Thread.sleep(110000);
 	}
 
 	@Test
@@ -3392,7 +3392,7 @@ public class DataRoutes64to99Tests {
 		engine.specifyGlue(bipGlue);
 		engine.start();
 		engine.execute();
-		Thread.sleep(80000);
+		Thread.sleep(110000);
 	}
 
 	@Test
@@ -4365,7 +4365,7 @@ public class DataRoutes64to99Tests {
 		engine.specifyGlue(bipGlue);
 		engine.start();
 		engine.execute();
-		Thread.sleep(80000);
+		Thread.sleep(120000);
 	}
 
 	@Test
@@ -5394,7 +5394,7 @@ public class DataRoutes64to99Tests {
 		engine.specifyGlue(bipGlue);
 		engine.start();
 		engine.execute();
-		Thread.sleep(80000);
+		Thread.sleep(120000);
 	}
 
 	@Test
@@ -6478,7 +6478,7 @@ public class DataRoutes64to99Tests {
 		engine.specifyGlue(bipGlue);
 		engine.start();
 		engine.execute();
-		Thread.sleep(80000);
+		Thread.sleep(130000);
 	}
 
 	@Test
@@ -7617,7 +7617,7 @@ public class DataRoutes64to99Tests {
 		engine.specifyGlue(bipGlue);
 		engine.start();
 		engine.execute();
-		Thread.sleep(100000);
+		Thread.sleep(130000);
 	}
 	
 	private RoutePolicy createRoutePolicy(final BIPActor executor) {

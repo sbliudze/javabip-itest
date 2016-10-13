@@ -122,6 +122,90 @@ public class Routes03to19Tests {
 	}
 
 	@Test
+	public void route4Test() throws BIPException {
+		System.out.println("Switchable Routes without Data: 5+1");
+
+		BIPGlue bipGlue = new TwoSynchronGlueBuilder() {
+			@Override
+			public void configure() {
+
+				synchron(SwitchableRoute.class, "on").to(MonitorNoDataManyRoutes.class, "add");
+				synchron(SwitchableRoute.class, "finished").to(MonitorNoDataManyRoutes.class, "rm");
+				port(SwitchableRoute.class, "off").acceptsNothing();
+				port(SwitchableRoute.class, "off").requiresNothing();
+
+			}
+
+		}.build();
+		BIPEngine engine = engineFactory.create("myEngine", bipGlue);
+
+		CamelContext camelContext = new DefaultCamelContext();
+		camelContext.setAutoStartup(false);
+
+		SwitchableRoute route1 = new SwitchableRoute("1", camelContext);
+		SwitchableRoute route2 = new SwitchableRoute("2", camelContext);
+		SwitchableRoute route3 = new SwitchableRoute("3", camelContext);
+		SwitchableRoute route4 = new SwitchableRoute("4", camelContext);
+
+		final BIPActor executor1 = engine.register(route1, "1", true);
+		final BIPActor executor2 = engine.register(route2, "2", true);
+		final BIPActor executor3 = engine.register(route3, "3", true);
+		final BIPActor executor4 = engine.register(route4, "4", true);
+		
+		MonitorNoDataManyRoutes monitorNoDataManyRoutes = new MonitorNoDataManyRoutes(3);
+		final BIPActor executorM = engine.register(monitorNoDataManyRoutes, "monitor", true);
+		
+		final RoutePolicy routePolicy1 = createRoutePolicy(executor1);
+		final RoutePolicy routePolicy2 = createRoutePolicy(executor2); 
+		final RoutePolicy routePolicy3 = createRoutePolicy(executor3);
+		final RoutePolicy routePolicy4 = createRoutePolicy(executor4); 
+		
+		
+
+		RouteBuilder builder1 = new RouteBuilder() {
+
+			@Override
+			public void configure() throws Exception {
+				from("file:inputfolder1?delete=true").routeId("1").routePolicy(routePolicy1).process(new Processor() {
+
+					public void process(Exchange exchange) throws Exception {
+
+					}
+				}).to("file:outputfolder1");
+
+				from("file:inputfolder2?delete=true").routeId("2").routePolicy(routePolicy2).process(new Processor() {
+
+					public void process(Exchange exchange) throws Exception {
+
+					}
+				}).to("file:outputfolder2");
+
+				from("file:inputfolder3?delete=true").routeId("3").routePolicy(routePolicy3).to("file:outputfolder3");
+				from("file:inputfolder4?delete=true").routeId("4").routePolicy(routePolicy4).to("file:outputfolder4");
+			}
+		};
+		try {
+			camelContext.addRoutes(builder1);
+			camelContext.start();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		engine.specifyGlue(bipGlue);
+		engine.start();
+		engine.execute();
+		try {
+			Thread.sleep(20000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		assertTrue("Route 1 has not made any transitions", route1.noOfEnforcedTransitions > 0);
+		assertTrue("Route 2 has not made any transitions", route2.noOfEnforcedTransitions > 0);
+		assertTrue("Route 3 has not made any transitions", route3.noOfEnforcedTransitions > 0);
+	}
+	
+	@Test
 	public void route5Test() throws BIPException {
 		System.out.println("Switchable Routes without Data: 5+1");
 
@@ -813,7 +897,7 @@ public class Routes03to19Tests {
 		engine.start();
 		engine.execute();
 		try {
-			Thread.sleep(20000000);
+			Thread.sleep(80000);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
