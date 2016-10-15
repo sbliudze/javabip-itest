@@ -172,7 +172,8 @@ public class PubSub55to100Test {
 			tr3.start();
 			Thread tr4=new Thread(new PubSub5topicsFirstRunnable(topics, msgs));
 			tr4.start();
-
+			Thread tr5=new Thread(new PubSub5topicsSecondRunnable(topics, msgs));
+			tr5.start();
 			Thread tr6 = new Thread(new PubSubRunnable(true));
 			tr6.start();
 
@@ -563,7 +564,8 @@ public class PubSub55to100Test {
 				tr3.start();
 				Thread tr4=new Thread(new PubSub5topicsFirstRunnable(topics, msgs));
 				tr4.start();
-
+				Thread tr5=new Thread(new PubSub5topicsSecondRunnable(topics, msgs));
+				tr5.start();
 				Thread tr6 = new Thread(new PubSubRunnable(true));
 				tr6.start();
 
@@ -989,7 +991,8 @@ public class PubSub55to100Test {
 				tr3.start();
 				Thread tr4=new Thread(new PubSub5topicsFirstRunnable(topics, msgs));
 				tr4.start();
-
+				Thread tr5=new Thread(new PubSub5topicsSecondRunnable(topics, msgs));
+				tr5.start();
 				Thread tr6 = new Thread(new PubSubRunnable(true));
 				tr6.start();
 
@@ -1451,7 +1454,8 @@ public class PubSub55to100Test {
 				tr3.start();
 				Thread tr4=new Thread(new PubSub5topicsFirstRunnable(topics, msgs));
 				tr4.start();
-
+				Thread tr5=new Thread(new PubSub5topicsSecondRunnable(topics, msgs));
+				tr5.start();
 				Thread tr6 = new Thread(new PubSubRunnable(true));
 				tr6.start();
 
@@ -1947,7 +1951,8 @@ public class PubSub55to100Test {
 				tr3.start();
 				Thread tr4=new Thread(new PubSub5topicsFirstRunnable(topics, msgs));
 				tr4.start();
-
+				Thread tr5=new Thread(new PubSub5topicsSecondRunnable(topics, msgs));
+				tr5.start();
 				Thread tr6 = new Thread(new PubSubRunnable(true));
 				tr6.start();
 
@@ -2477,7 +2482,8 @@ public class PubSub55to100Test {
 				tr3.start();
 				Thread tr4=new Thread(new PubSub5topicsFirstRunnable(topics, msgs));
 				tr4.start();
-
+				Thread tr5=new Thread(new PubSub5topicsSecondRunnable(topics, msgs));
+				tr5.start();
 				Thread tr6 = new Thread(new PubSubRunnable(true));
 				tr6.start();
 
@@ -3043,7 +3049,8 @@ public class PubSub55to100Test {
 				tr3.start();
 				Thread tr4=new Thread(new PubSub5topicsFirstRunnable(topics, msgs));
 				tr4.start();
-
+				Thread tr5=new Thread(new PubSub5topicsSecondRunnable(topics, msgs));
+				tr5.start();
 				Thread tr6 = new Thread(new PubSubRunnable(true));
 				tr6.start();
 
@@ -3643,7 +3650,8 @@ public class PubSub55to100Test {
 				tr3.start();
 				Thread tr4=new Thread(new PubSub5topicsFirstRunnable(topics, msgs));
 				tr4.start();
-
+				Thread tr5=new Thread(new PubSub5topicsSecondRunnable(topics, msgs));
+				tr5.start();
 				Thread tr6 = new Thread(new PubSubRunnable(true));
 				tr6.start();
 
@@ -4277,7 +4285,8 @@ public class PubSub55to100Test {
 				tr3.start();
 				Thread tr4=new Thread(new PubSub5topicsFirstRunnable(topics, msgs));
 				tr4.start();
-
+				Thread tr5=new Thread(new PubSub5topicsSecondRunnable(topics, msgs));
+				tr5.start();
 				Thread tr6 = new Thread(new PubSubRunnable(true));
 				tr6.start();
 
@@ -4946,7 +4955,8 @@ public class PubSub55to100Test {
 				tr3.start();
 				Thread tr4=new Thread(new PubSub5topicsFirstRunnable(topics, msgs));
 				tr4.start();
-
+				Thread tr5=new Thread(new PubSub5topicsSecondRunnable(topics, msgs));
+				tr5.start();
 				Thread tr6 = new Thread(new PubSubRunnable(true));
 				tr6.start();
 
