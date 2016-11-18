@@ -7,6 +7,13 @@
   
   <name>BIP :: Core :: Integration Tests</name>
 
+	<parent> 
+		<groupId>org.bip</groupId>
+		<artifactId>org.bip.parent</artifactId>
+		<version>0.1.0-SNAPSHOT</version>
+	</parent>
+
+	<!-- TODO change to github -->
 	<scm>
 		<developerConnection>scm:git:git@git.xtech.io:bip/org.bip.itests.git</developerConnection>
 		<url>https://git.xtech.io/bip/org.bip.itests</url>
@@ -53,13 +60,11 @@
 	  <dependency>
 		  <groupId>org.bip.shared</groupId>
 		  <artifactId>org.bip.engine.api</artifactId>
-		  <version>0.1.0-SNAPSHOT</version>
 	  </dependency>
 
 	  <dependency>
 		  <groupId>org.bip.shared</groupId>
 		  <artifactId>org.bip.engine.factory</artifactId>
-		  <version>0.1.0-SNAPSHOT</version>
 	  </dependency>
 
 	<dependency>
@@ -176,7 +181,6 @@
    						<include>**/org/bip/executor/IntegrationTests.class</include>
  						<include>**/org/bip/executor/AkkaExecutorTests.class</include>						
 		 				<include>**/org/bip/executor/AkkaRefactoredTests.class</include>
-<!--						<include>**/org/bip/executor/TelephonicTest.class</include>-->
  					</includes>
 
 					<systemPropertyVariables>
