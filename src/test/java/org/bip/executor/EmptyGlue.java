@@ -1,14 +1,22 @@
-package org.bip.executor;
 /*
- * Copyright (c) 2011 Crossing-Tech TM Switzerland. All right reserved.
- * User: radoslaw
- * Date: 11/27/15
- *   ___                      _   _             ___         _
- *  / __|___ _ _  _ _  ___ __| |_(_)__ ___  _  | __|__ _ __| |_ ___ _ _ _  _
- * | (__/ _ \ ' \| ' \/ -_) _|  _| |\ V / || | | _|/ _` / _|  _/ _ \ '_| || |
- *  \___\___/_||_|_||_\___\__|\__|_| \_/ \_, | |_| \__,_\__|\__\___/_|  \_, |
- *                                       |__/                           |__/
+ * Copyright 2012-2016 École polytechnique fédérale de Lausanne (EPFL), Switzerland
+ * Copyright 2012-2016 Crossing-Tech SA, Switzerland
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Author: Simon Bliudze, Anastasia Mavridou, Radoslaw Szymanek and Alina Zolotukhina
  */
+package org.bip.executor;
 
 import org.bip.api.Accept;
 import org.bip.api.BIPGlue;
@@ -19,24 +27,28 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represents an empty glue without any ports.
+ * 
+ */
 public class EmptyGlue implements BIPGlue {
-    @Override
-    public List<Accept> getAcceptConstraints() {
-        return new ArrayList<Accept>();
-    }
+	@Override
+	public List<Accept> getAcceptConstraints() {
+		return new ArrayList<Accept>();
+	}
 
-    @Override
-    public List<Require> getRequiresConstraints() {
-        return new ArrayList<Require>();
-    }
+	@Override
+	public List<Require> getRequiresConstraints() {
+		return new ArrayList<Require>();
+	}
 
-    @Override
-    public List<DataWire> getDataWires() {
-        return new ArrayList<DataWire>();
-    }
+	@Override
+	public List<DataWire> getDataWires() {
+		return new ArrayList<DataWire>();
+	}
 
-    @Override
-    public void toXML(OutputStream outputStream) {
-    }
+	@Override
+	public void toXML(OutputStream outputStream) {
+	}
 
 }

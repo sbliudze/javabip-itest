@@ -1,3 +1,21 @@
+/*
+ * Copyright 2012-2016 École polytechnique fédérale de Lausanne (EPFL), Switzerland
+ * Copyright 2012-2016 Crossing-Tech SA, Switzerland
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * Author: Simon Bliudze, Anastasia Mavridou, Radoslaw Szymanek and Alina Zolotukhina
+ */
 package org.bip.executor;
 
 import static org.junit.Assert.assertEquals;
@@ -39,8 +57,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import akka.actor.ActorSystem;
 
@@ -48,7 +64,7 @@ public class IntegrationTests {
 
 	ActorSystem system;
 	EngineFactory engineFactory;
-	
+
 	@Before
 	public void initialize() {
 
@@ -56,12 +72,12 @@ public class IntegrationTests {
 		engineFactory = new EngineFactory(system);
 
 	}
-	
+
 	@After
 	public void cleanup() {
-		
+
 		system.shutdown();
-		
+
 	}
 
 	private BIPGlue createGlue(String bipGlueFilename) {
@@ -78,17 +94,14 @@ public class IntegrationTests {
 			e.printStackTrace();
 		}
 		return bipGlue;
-		
+
 	}
 
-	
 	@Test
 	public void bipGlueTest() {
 		BIPGlue bipGlue = createGlue("src/test/resources/bipGlueExecutableBehaviour.xml");
-		assertEquals("The number of accept constraints is not appropriate", 5,
-				bipGlue.getAcceptConstraints().size());
-		assertEquals("The number of require constraints is not appropriate", 5,
-				bipGlue.getRequiresConstraints().size());
+		assertEquals("The number of accept constraints is not appropriate", 5, bipGlue.getAcceptConstraints().size());
+		assertEquals("The number of require constraints is not appropriate", 5, bipGlue.getRequiresConstraints().size());
 	}
 
 	@Test
@@ -102,15 +115,14 @@ public class IntegrationTests {
 		assertEquals(portC.hashCode(), portD.hashCode());
 	}
 
-	
 	@Test
 	public void routesTest() throws BIPException {
 
 		/*
 		 * Test story.
 		 * 
-		 * The classical Switchable Routes example with three routes and one monitor,
-		 * without data transfer, specification through annotations.
+		 * The classical Switchable Routes example with three routes and one monitor, without data transfer,
+		 * specification through annotations.
 		 */
 
 		BIPGlue bipGlue = new TwoSynchronGlueBuilder() {
@@ -119,13 +131,12 @@ public class IntegrationTests {
 
 				synchron(SwitchableRoute.class, "on").to(RouteOnOffMonitor.class, "add");
 				synchron(SwitchableRoute.class, "finished").to(RouteOnOffMonitor.class, "rm");
-				
+
 				port(SwitchableRoute.class, "off").acceptsNothing();
-				port(SwitchableRoute.class, "off")	.requiresNothing();
+				port(SwitchableRoute.class, "off").requiresNothing();
 
 			}
 		}.build();
-
 
 		BIPEngine engine = engineFactory.create("myEngine", bipGlue);
 
@@ -138,29 +149,27 @@ public class IntegrationTests {
 		route1.setCamelContext(camelContext);
 		route2.setCamelContext(camelContext);
 		route3.setCamelContext(camelContext);
-		
+
 		final BIPActor executor1 = engine.register(route1, "1", true);
 		final BIPActor executor2 = engine.register(route2, "2", true);
 		final BIPActor executor3 = engine.register(route3, "3", true);
 
+		@SuppressWarnings("unused")
 		final BIPActor executorM = engine.register(routeOnOffMonitor, "monitor", true);
-		
+
 		final RoutePolicy routePolicy1 = createRoutePolicy(executor1);
-		final RoutePolicy routePolicy2 = createRoutePolicy(executor2); 
+		final RoutePolicy routePolicy2 = createRoutePolicy(executor2);
 		final RoutePolicy routePolicy3 = createRoutePolicy(executor3);
-		
+
 		RouteBuilder builder = new RouteBuilder() {
 
 			@Override
 			public void configure() throws Exception {
-				from("file:inputfolder1?delete=true").routeId("1")
-						.routePolicy(routePolicy1).to("file:outputfolder1");
+				from("file:inputfolder1?delete=true").routeId("1").routePolicy(routePolicy1).to("file:outputfolder1");
 
-			from("file:inputfolder2?delete=true").routeId("2")
-						.routePolicy(routePolicy2).to("file:outputfolder2");
+				from("file:inputfolder2?delete=true").routeId("2").routePolicy(routePolicy2).to("file:outputfolder2");
 
-				from("file:inputfolder3?delete=true").routeId("3")
-						.routePolicy(routePolicy3).to("file:outputfolder3");
+				from("file:inputfolder3?delete=true").routeId("3").routePolicy(routePolicy3).to("file:outputfolder3");
 			}
 		};
 		camelContext.setAutoStartup(false);
@@ -174,7 +183,7 @@ public class IntegrationTests {
 		engine.specifyGlue(bipGlue);
 		engine.start();
 		engine.execute();
-		
+
 		try {
 			Thread.sleep(20000);
 		} catch (InterruptedException e) {
@@ -183,23 +192,23 @@ public class IntegrationTests {
 
 		engine.stop();
 		engineFactory.destroy(engine);
-			
+
 		assertTrue("Route 1 has not made any transitions", route1.noOfEnforcedTransitions > 0);
 		assertTrue("Route 2 has not made any transitions", route2.noOfEnforcedTransitions > 0);
 		assertTrue("Route 3 has not made any transitions", route3.noOfEnforcedTransitions > 0);
-		
+
 	}
-	
+
 	@Test
 	public void behaviourBuildingTest() throws BIPException {
 
 		/*
 		 * Test story.
 		 * 
-		 * The classical Switchable Routes example with three routes and one monitor,
-		 * without data transfer, specification through provided behaviour.
+		 * The classical Switchable Routes example with three routes and one monitor, without data transfer,
+		 * specification through provided behaviour.
 		 */
-		
+
 		BIPGlue bipGlue = createGlue("src/test/resources/bipGlueExecutableBehaviour.xml");
 
 		BIPEngine engine = engineFactory.create("myEngine", bipGlue);
@@ -213,31 +222,29 @@ public class IntegrationTests {
 		route1.setCamelContext(camelContext);
 		route2.setCamelContext(camelContext);
 		route3.setCamelContext(camelContext);
-		
+
 		final BIPActor executor1 = engine.register(route1, "1", false);
 		final BIPActor executor2 = engine.register(route2, "2", false);
 		final BIPActor executor3 = engine.register(route3, "3", false);
 
+		@SuppressWarnings("unused")
 		final BIPActor executorM = engine.register(routeOnOffMonitor, "monitor", true);
-		
+
 		final RoutePolicy routePolicy1 = createRoutePolicy(executor1);
-		
-		final RoutePolicy routePolicy2 = createRoutePolicy(executor2); 
-				
+
+		final RoutePolicy routePolicy2 = createRoutePolicy(executor2);
+
 		final RoutePolicy routePolicy3 = createRoutePolicy(executor3);
-		
+
 		RouteBuilder builder = new RouteBuilder() {
 
 			@Override
 			public void configure() throws Exception {
-				from("file:inputfolder1?delete=true").routeId("1")
-						.routePolicy(routePolicy1).to("file:outputfolder1");
+				from("file:inputfolder1?delete=true").routeId("1").routePolicy(routePolicy1).to("file:outputfolder1");
 
-				from("file:inputfolder2?delete=true").routeId("2")
-						.routePolicy(routePolicy2).to("file:outputfolder2");
+				from("file:inputfolder2?delete=true").routeId("2").routePolicy(routePolicy2).to("file:outputfolder2");
 
-				from("file:inputfolder3?delete=true").routeId("3")
-						.routePolicy(routePolicy3).to("file:outputfolder3");
+				from("file:inputfolder3?delete=true").routeId("3").routePolicy(routePolicy3).to("file:outputfolder3");
 			}
 		};
 		camelContext.setAutoStartup(false);
@@ -258,7 +265,7 @@ public class IntegrationTests {
 		}
 
 		engine.execute();
-		
+
 		try {
 			Thread.sleep(20000);
 		} catch (InterruptedException e) {
@@ -267,11 +274,11 @@ public class IntegrationTests {
 
 		engine.stop();
 		engineFactory.destroy(engine);
-				
+
 		assertTrue("Route 1 has not made any transitions", route1.noOfEnforcedTransitions > 0);
 		assertTrue("Route 2 has not made any transitions", route2.noOfEnforcedTransitions > 0);
 		assertTrue("Route 3 has not made any transitions", route3.noOfEnforcedTransitions > 0);
-		
+
 	}
 
 	@Test
@@ -280,31 +287,27 @@ public class IntegrationTests {
 		/*
 		 * Test story.
 		 * 
-		 * There is one component (TestSpecEnforceableSpontaneous) 
-		 * with one enforceable port p and one spontaneous port s. 
-		 * The two ports must be executed in alternation, one after the other.
-		 * A separate thread sends a fixed number of spontaneous events with a random frequency. 
-		 * The testing thread then sleeps every now and then until a certain number of sleeps has been reached.
-		 * By then the component must have executed all spontaneous transitions.
+		 * There is one component (TestSpecEnforceableSpontaneous) with one enforceable port p and one spontaneous port
+		 * s. The two ports must be executed in alternation, one after the other. A separate thread sends a fixed number
+		 * of spontaneous events with a random frequency. The testing thread then sleeps every now and then until a
+		 * certain number of sleeps has been reached. By then the component must have executed all spontaneous
+		 * transitions.
 		 */
-		
+
 		BIPGlue bipGlue = new GlueBuilder() {
 			@Override
 			public void configure() {
 
-				port(TestSpecEnforceableSpontaneous.class, "p")
-						.requiresNothing();
+				port(TestSpecEnforceableSpontaneous.class, "p").requiresNothing();
 
-				port(TestSpecEnforceableSpontaneous.class, "p")
-						.acceptsNothing();
+				port(TestSpecEnforceableSpontaneous.class, "p").acceptsNothing();
 
 			}
 
 		}.build();
 
-
 		BIPEngine engine = engineFactory.create("myEngine", bipGlue);
-		
+
 		final int noSpontaneousToBeSend = 5;
 		final int noOfMilisecondsBetweenS = 1000;
 		final int executorLoopDelay = 1000;
@@ -347,17 +350,16 @@ public class IntegrationTests {
 				e.printStackTrace();
 			}
 			sleepCounter++;
-			if (sleepCounter > 2 * noOfMilisecondsBetweenS
-					* noSpontaneousToBeSend / internalSleep + executorLoopDelay
+			if (sleepCounter > 2 * noOfMilisecondsBetweenS * noSpontaneousToBeSend / internalSleep + executorLoopDelay
 					* noSpontaneousToBeSend * 2)
 				fail("Not enough spontaneous events have been executed within a given time frame.");
 		}
 
 		engine.stop();
 		engineFactory.destroy(engine);
-				
+
 		assertTrue("Component 1 has not made any transitions", component1.pCounter > 0);
-		
+
 		assertEquals(component1.getsCounter(), noSpontaneousToBeSend);
 
 	}
@@ -368,39 +370,36 @@ public class IntegrationTests {
 		/*
 		 * Test story.
 		 * 
-		 * There is one component (TestSpecEnforceableSpontaneous) 
-		 * with one enforceable port p and one spontaneous port s. 
-		 * The two ports must be executed in alternation, one after the other.
-		 * A separate thread sends a fixed number of spontaneous events with a random frequency. 
-		 * The testing thread then sleeps every now and then until a certain number of sleeps has been reached.
-		 * By then the component must have executed all spontaneous transitions.
+		 * There is one component (TestSpecEnforceableSpontaneous) with one enforceable port p and one spontaneous port
+		 * s. The two ports must be executed in alternation, one after the other. A separate thread sends a fixed number
+		 * of spontaneous events with a random frequency. The testing thread then sleeps every now and then until a
+		 * certain number of sleeps has been reached. By then the component must have executed all spontaneous
+		 * transitions.
 		 * 
-		 * The difference with the previous test is in sleep duration and frequency and that there is only one spontaneous transition.
+		 * The difference with the previous test is in sleep duration and frequency and that there is only one
+		 * spontaneous transition.
 		 */
-		
+
 		BIPGlue bipGlue = new GlueBuilder() {
 			@Override
 			public void configure() {
 
-				port(TestSpecEnforceableSpontaneous.class, "p")
-						.requiresNothing();
+				port(TestSpecEnforceableSpontaneous.class, "p").requiresNothing();
 
-				port(TestSpecEnforceableSpontaneous.class, "p")
-						.acceptsNothing();
+				port(TestSpecEnforceableSpontaneous.class, "p").acceptsNothing();
 
 			}
 
 		}.build();
 
 		BIPEngine engine = engineFactory.create("myEngine", bipGlue);
-		
+
 		final int noSpontaneousToBeSend = 1;
 		final int noOfMilisecondsBetweenS = 1000;
-		
+
 		TestSpecEnforceableSpontaneous component1 = new TestSpecEnforceableSpontaneous();
 
 		final BIPActor executor1 = engine.register(component1, "comp1", true);
-		
 
 		Thread t2 = new Thread(new Runnable() {
 
@@ -433,7 +432,7 @@ public class IntegrationTests {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
+
 		while (component1.getsCounter() < noSpontaneousToBeSend) {
 			final int internalSleep = 2000;
 			try {
@@ -442,62 +441,53 @@ public class IntegrationTests {
 				e.printStackTrace();
 			}
 			sleepCounter++;
-			if (sleepCounter > 2 * noOfMilisecondsBetweenS
-					* noSpontaneousToBeSend / internalSleep)
+			if (sleepCounter > 2 * noOfMilisecondsBetweenS * noSpontaneousToBeSend / internalSleep)
 				fail("Not enough spontaneous events have been executed within a given time frame: "
 						+ component1.getsCounter());
 		}
 
 		engine.stop();
 		engineFactory.destroy(engine);
-		
+
 		assertTrue("Component 1 has not made any transitions", component1.pCounter > 0);
-		
+
 		assertEquals(component1.getsCounter(), noSpontaneousToBeSend);
 
 	}
 
-	@Test	
+	@Test
 	public void ternaryInteractionWithTriggerTest() throws BIPException {
 
 		/*
 		 * Test story.
 		 * 
-		 * Rcomponent with its port triggers an interaction where pComponent 
-		 * (p port) is synchronized with qComponent (q port)
+		 * Rcomponent with its port triggers an interaction where pComponent (p port) is synchronized with qComponent (q
+		 * port)
 		 * 
-		 * In Q: s enables q, after executing q gets disabled.
-		 * In P: either p does not need to be globally enabled, 
-		 * or s enables p, after executing p gets disabled.
+		 * In Q: s enables q, after executing q gets disabled. In P: either p does not need to be globally enabled, or s
+		 * enables p, after executing p gets disabled.
 		 * 
-		 * pComponent because it is initialized with false will not be able to
-		 * execute transitions with spontaneous events. What happens then with
-		 * BIP Executor? Lets assume for a moment that queuing behavior is
-		 * correct. P is always enabled. Therefore, the maximum interaction will
-		 * always choose pqr (or pr), and not just qr.
+		 * pComponent because it is initialized with false will not be able to execute transitions with spontaneous
+		 * events. What happens then with BIP Executor? Lets assume for a moment that queuing behavior is correct. P is
+		 * always enabled. Therefore, the maximum interaction will always choose pqr (or pr), and not just qr.
 		 * 
-		 * Components q and r have to have spontaneous events received and
-		 * treated to be able to have enforceable transition enabled.
+		 * Components q and r have to have spontaneous events received and treated to be able to have enforceable
+		 * transition enabled.
 		 */
 
-
-		
 		BIPGlue bipGlue = new GlueBuilder() {
 			@Override
 			public void configure() {
 
 				port(PComponent.class, "p").requires(RComponent.class, "r");
 
-				port(PComponent.class, "p").accepts(QComponent.class, "q",
-						RComponent.class, "r");
+				port(PComponent.class, "p").accepts(QComponent.class, "q", RComponent.class, "r");
 
 				port(QComponent.class, "q").requires(PComponent.class, "p");
 
-				port(QComponent.class, "q").accepts(PComponent.class, "p",
-						RComponent.class, "r");
+				port(QComponent.class, "q").accepts(PComponent.class, "p", RComponent.class, "r");
 
-				port(RComponent.class, "r").accepts(PComponent.class, "p",
-						QComponent.class, "q");
+				port(RComponent.class, "r").accepts(PComponent.class, "p", QComponent.class, "q");
 
 				port(RComponent.class, "r").requiresNothing();
 
@@ -516,8 +506,7 @@ public class IntegrationTests {
 
 		bipGlue.toXML(bipGlueOutputStream);
 
-		ByteArrayInputStream bipGlueInputStream = new ByteArrayInputStream(
-				bipGlueOutputStream.toByteArray());
+		ByteArrayInputStream bipGlueInputStream = new ByteArrayInputStream(bipGlueOutputStream.toByteArray());
 
 		bipGlue = GlueBuilder.fromXML(bipGlueInputStream);
 
@@ -535,9 +524,6 @@ public class IntegrationTests {
 
 		RComponent rComponent = new RComponent();
 		final BIPActor rExecutor = engine.register(rComponent, "rComponent", true);
-		
-		// BIP engine.
-
 
 		Thread testDriver = new Thread(new Runnable() {
 
@@ -555,9 +541,7 @@ public class IntegrationTests {
 					// guard is never true,
 
 					pExecutor.inform("s");
-
 					rExecutor.inform("s");
-
 					qExecutor.inform("s");
 				}
 
@@ -570,7 +554,7 @@ public class IntegrationTests {
 		testDriver.start();
 
 		engine.execute();
-		
+
 		try {
 			Thread.sleep(40000);
 		} catch (InterruptedException e) {
@@ -579,7 +563,7 @@ public class IntegrationTests {
 
 		engine.stop();
 		engineFactory.destroy(engine);
-		
+
 		assertEquals(noIterations, pComponent.pCounter);
 		assertEquals(noIterations, rComponent.rCounter);
 
@@ -592,9 +576,8 @@ public class IntegrationTests {
 
 		/*
 		 * 
-		 * In place annotated with comment "MISTAKE on purpose", we use the second
-		 * time pComponent instead of q component to get
-		 * ArrayIndexOutOfBoundException.
+		 * In place annotated with comment "MISTAKE on purpose", we use the second time pComponent instead of q
+		 * component to get ArrayIndexOutOfBoundException.
 		 */
 
 		BIPGlue bipGlue = new GlueBuilder() {
@@ -603,16 +586,13 @@ public class IntegrationTests {
 
 				port(PComponent.class, "p").requires(RComponent.class, "r");
 
-				port(PComponent.class, "p").accepts(QComponent.class, "q",
-						RComponent.class, "r");
+				port(PComponent.class, "p").accepts(QComponent.class, "q", RComponent.class, "r");
 
 				port(QComponent.class, "q").requires(RComponent.class, "r");
 
-				port(QComponent.class, "q").accepts(PComponent.class, "p",
-						RComponent.class, "r");
+				port(QComponent.class, "q").accepts(PComponent.class, "p", RComponent.class, "r");
 
-				port(RComponent.class, "r").accepts(PComponent.class, "p",
-						QComponent.class, "q");
+				port(RComponent.class, "r").accepts(PComponent.class, "p", QComponent.class, "q");
 
 				port(RComponent.class, "r").requiresNothing();
 
@@ -625,12 +605,11 @@ public class IntegrationTests {
 
 		BIPEngine engine = engineFactory.create("myEngine", bipGlue);
 
-
 		// Component P that does not need enable signals.
 
 		PComponent pComponent = new PComponent(false);
 		final BIPActor pExecutor = engine.register(pComponent, "pComponent", true);
-		
+
 		// Component Q
 
 		// QComponent qComponent = new QComponent();
@@ -641,8 +620,6 @@ public class IntegrationTests {
 
 		RComponent rComponent = new RComponent();
 		final BIPActor rExecutor = engine.register(rComponent, "rComponent", true);
-		
-		// BIP engine.
 
 		Thread testDriver = new Thread(new Runnable() {
 
@@ -683,7 +660,7 @@ public class IntegrationTests {
 
 		engine.stop();
 		engineFactory.destroy(engine);
-		
+
 		assertEquals("No progress for pComponent due to lack of QComponent", 0, pComponent.pCounter);
 		assertEquals("No progress for rComponent due to lack of QComponent", 0, rComponent.rCounter);
 
@@ -697,18 +674,16 @@ public class IntegrationTests {
 		 * 
 		 * A synchronous interaction PSS.p with R.r
 		 * 
-		 * PSS component receives two spontaneous events that are changing the
-		 * status of variable used as p guard. There are twice more enabling
-		 * events than disabling events so still noIterations of pr interactions
-		 * should take place.
+		 * PSS component receives two spontaneous events that are changing the status of variable used as p guard. There
+		 * are twice more enabling events than disabling events so still noIterations of pr interactions should take
+		 * place.
 		 * 
 		 * R.s is also being sent so that R.r can be enabled.
 		 * 
-		 * [DONE] This test assumes a new treatment of spontaneous events,
-		 * namely that if one spontaneous event has arrived then if its guard
-		 * evaluates to true (or guard does not exist) then there is no
-		 * exception if enforceable transition also evaluates to true.
-		 * Spontaneous transition will have a precedence over enforceable one.
+		 * [DONE] This test assumes a new treatment of spontaneous events, namely that if one spontaneous event has
+		 * arrived then if its guard evaluates to true (or guard does not exist) then there is no exception if
+		 * enforceable transition also evaluates to true. Spontaneous transition will have a precedence over enforceable
+		 * one.
 		 */
 
 		final int noIterations = 5;
@@ -731,22 +706,18 @@ public class IntegrationTests {
 		}.build();
 
 		BIPEngine engine = engineFactory.create("myEngine", bipGlue);
-		
-
 
 		// Component P that does not need enable signals.
 
 		PSSComponent pComponent = new PSSComponent(true);
-		
+
 		final BIPActor pExecutor = engine.register(pComponent, "pComponent", true);
 
 		// Component R
 
 		RComponent rComponent = new RComponent();
-		
-		final BIPActor rExecutor = engine.register(rComponent, "rComponent", true);
 
-		// BIP engine.
+		final BIPActor rExecutor = engine.register(rComponent, "rComponent", true);
 
 		Thread testDriver1 = new Thread(new Runnable() {
 
@@ -832,7 +803,6 @@ public class IntegrationTests {
 			}
 		}, "TestDriver4");
 
-
 		engine.specifyGlue(bipGlue);
 		engine.start();
 
@@ -853,15 +823,14 @@ public class IntegrationTests {
 				e.printStackTrace();
 			}
 			sleepCounter++;
-			if (sleepCounter > 2 * noOfMilisecondsBetweenS * noIterations
-					/ internalSleep + executorLoopDelay * noIterations * 2
-					/ internalSleep + 1)
+			if (sleepCounter > 2 * noOfMilisecondsBetweenS * noIterations / internalSleep + executorLoopDelay
+					* noIterations * 2 / internalSleep + 1)
 				break;
 		}
 
 		engine.stop();
 		engineFactory.destroy(engine);
-		
+
 		assertEquals(noIterations * 2, pComponent.spontaneousEnableCounter);
 		assertEquals(noIterations, pComponent.spontaneousDisableCounter);
 		assertEquals(noIterations, pComponent.pCounter);
@@ -869,31 +838,27 @@ public class IntegrationTests {
 	}
 
 	@Test
-	@Ignore // old ignore because the test is time-consuming
-	public void binaryInteractionLargeBehaviorTest()
-			throws NoSuchMethodException, BIPException {
+	@Ignore
+	// old ignore because the test is time-consuming
+	public void binaryInteractionLargeBehaviorTest() throws NoSuchMethodException, BIPException {
 
 		/*
 		 * Test story.
 		 * 
-		 * PResizableComponent is a component with one enforceable transition
-		 * and two spontaneous. SR does the rollback of enforceable transition.
-		 * SE enables next p transition.
+		 * PResizableComponent is a component with one enforceable transition and two spontaneous. SR does the rollback
+		 * of enforceable transition. SE enables next p transition.
 		 * 
-		 * QComponent has q transition that participates in the interaction with
-		 * p.
+		 * QComponent has q transition that participates in the interaction with p.
 		 * 
-		 * PResizable component has a large state space (e.g. 1000 states
-		 * decided upon the construction).
+		 * PResizable component has a large state space (e.g. 1000 states decided upon the construction).
 		 * 
 		 * 
 		 * 
-		 * Components q and r have to have spontaneous events recceived and
-		 * treated to be able to have enforceable transition enabled.
+		 * Components q and r have to have spontaneous events recceived and treated to be able to have enforceable
+		 * transition enabled.
 		 */
 
-		final int noIterations = 100; // no of states in PResizableComponent
-										// too.
+		final int noIterations = 100; // no of states in PResizableComponent too.
 		final int noOfMilisecondsBetweenS = 1000;
 		final int executorLoopDelay = 1000;
 
@@ -901,37 +866,30 @@ public class IntegrationTests {
 			@Override
 			public void configure() {
 
-				port(PResizableBehaviorComponent.class, "p").requires(
-						QComponent.class, "q");
+				port(PResizableBehaviorComponent.class, "p").requires(QComponent.class, "q");
 
-				port(PResizableBehaviorComponent.class, "p").accepts(
-						QComponent.class, "q");
+				port(PResizableBehaviorComponent.class, "p").accepts(QComponent.class, "q");
 
-				port(QComponent.class, "q").requires(
-						PResizableBehaviorComponent.class, "p");
+				port(QComponent.class, "q").requires(PResizableBehaviorComponent.class, "p");
 
-				port(QComponent.class, "q").accepts(
-						PResizableBehaviorComponent.class, "p");
+				port(QComponent.class, "q").accepts(PResizableBehaviorComponent.class, "p");
 
 			}
 
 		}.build();
 
-
 		BIPEngine engine = engineFactory.create("myEngine", bipGlue);
-
 
 		// Component P that does not need enable signals.
 
-		PResizableBehaviorComponent pComponent = new PResizableBehaviorComponent(
-				true, noIterations);
+		PResizableBehaviorComponent pComponent = new PResizableBehaviorComponent(true, noIterations);
 
 		final BIPActor pExecutor = engine.register(pComponent, "pComponent", false);
-		
+
 		// Component Q
 
 		QComponent qComponent = new QComponent();
-		
+
 		final BIPActor qExecutor = engine.register(qComponent, "qComponent", true);
 
 		// We enable noIterations of pq interactions.
@@ -967,8 +925,7 @@ public class IntegrationTests {
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
-					// This spontaneous signal has no guard so it will be always
-					// executed.
+					/* This spontaneous signal has no guard so it will be always executed. */
 
 					pExecutor.inform("sr");
 
@@ -996,8 +953,8 @@ public class IntegrationTests {
 				e.printStackTrace();
 			}
 			sleepCounter++;
-			if (sleepCounter > 2 * noOfMilisecondsBetweenS * noIterations
-					/ internalSleep + executorLoopDelay * noIterations * 2)
+			if (sleepCounter > 2 * noOfMilisecondsBetweenS * noIterations / internalSleep + executorLoopDelay
+					* noIterations * 2)
 				fail("Not enough spontaneous events have been executed within a given time frame.");
 		}
 
@@ -1006,26 +963,26 @@ public class IntegrationTests {
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		
+
 		engine.stop();
 		engineFactory.destroy(engine);
-		
+
 		assertEquals(0, pComponent.pCounter);
 
 		assertEquals(noIterations, qComponent.qCounter);
 
 	}
 
-	private RoutePolicy createRoutePolicy(final BIPActor executor1) {
-		
-		return  new RoutePolicy() {
+	private RoutePolicy createRoutePolicy(final BIPActor executor) {
+
+		return new RoutePolicy() {
 
 			public void onInit(Route route) {
 			}
 
 			public void onExchangeDone(Route route, Exchange exchange) {
 
-				executor1.inform("end");
+				executor.inform("end");
 			}
 
 			public void onExchangeBegin(Route route, Exchange exchange) {

@@ -101,6 +101,7 @@ public class AkkaRefactoredTests {
 
 	}
 
+	@SuppressWarnings("unused")
 	@Test
 	/**
 	 * Testcase: there are three instances of sealable data, two writer instances and one reader instance. The data is sealed once a read is performed.
@@ -173,9 +174,11 @@ public class AkkaRefactoredTests {
 		BIPActor actor1 = engine.register(componentA, "compA", true);
 
 		ComponentB componentB = new ComponentB();
+		@SuppressWarnings("unused")
 		BIPActor actor2 = engine.register(componentB, "compB", true);
 
 		ComponentC componentC = new ComponentC();
+		@SuppressWarnings("unused")
 		BIPActor actor3 = engine.register(componentC, "compC", true);
 
 		engine.specifyGlue(bipGlue);
@@ -243,9 +246,11 @@ public class AkkaRefactoredTests {
 				true);
 
 		ComponentB componentB = new ComponentB();
+		@SuppressWarnings("unused")
 		BIPActor actor2 = engine.register(componentB, "compB", true);
 
 		ComponentC componentC = new ComponentC();
+		@SuppressWarnings("unused")
 		BIPActor actor3 = engine.register(componentC, "compC", true);
 
 		engine.specifyGlue(bipGlue);
@@ -287,9 +292,11 @@ public class AkkaRefactoredTests {
 				true);
 
 		ComponentB componentB = new ComponentB();
+		@SuppressWarnings("unused")
 		BIPActor actor2 = engine.register(componentB, "compB", true);
 
 		ComponentC componentC = new ComponentC();
+		@SuppressWarnings("unused")
 		BIPActor actor3 = engine.register(componentC, "compC", true);
 
 		engine.specifyGlue(bipGlue);

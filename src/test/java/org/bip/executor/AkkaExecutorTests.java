@@ -27,8 +27,6 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 
-import javax.xml.bind.JAXBException;
-
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.Route;
@@ -42,7 +40,25 @@ import org.bip.engine.factory.EngineFactory;
 import org.bip.exceptions.BIPException;
 import org.bip.glue.GlueBuilder;
 import org.bip.glue.TwoSynchronGlueBuilder;
-import org.bip.spec.*;
+import org.bip.spec.ComponentA;
+import org.bip.spec.ComponentB;
+import org.bip.spec.ComponentC;
+import org.bip.spec.Consumer;
+import org.bip.spec.Feeder;
+import org.bip.spec.InitialServer;
+import org.bip.spec.Master;
+import org.bip.spec.MemoryMonitor;
+import org.bip.spec.PSSComponent;
+import org.bip.spec.Peer;
+import org.bip.spec.RouteOnOffMonitor;
+import org.bip.spec.Server;
+import org.bip.spec.Slave;
+import org.bip.spec.SwitchableRouteDataTransfers;
+import org.bip.spec.SwitchableRouteErrorException;
+import org.bip.spec.Tracker;
+import org.bip.spec.TwoDataProvider1;
+import org.bip.spec.TwoDataProvider2;
+import org.bip.spec.TwoDataTaker;
 import org.bip.spec.diningphilosophers.DiningPhilosophersGlueBuilder;
 import org.bip.spec.diningphilosophers.Fork;
 import org.bip.spec.diningphilosophers.Philosophers;
@@ -79,6 +95,9 @@ public class AkkaExecutorTests {
 
 	}
 
+	/**
+	 * A simple test verifying the creation of the executor actor by the engine.
+	 */
 	@Test
 	public void akkaExecutorSimpleTest() {
 
@@ -97,6 +116,11 @@ public class AkkaExecutorTests {
 
 	}
 
+	/**
+	 * A test creating three Switchable routes with a monitor, exchanging data of the routes memory usage.
+	 * 
+	 * @throws BIPException
+	 */
 	@Test
 	public void routesWithDataTest() throws BIPException {
 
@@ -139,9 +163,7 @@ public class AkkaExecutorTests {
 			@Override
 			public void configure() throws Exception {
 				from("file:inputfolder1?delete=true").routeId("1").routePolicy(routePolicy1).to("file:outputfolder1");
-
 				from("file:inputfolder2?delete=true").routeId("2").routePolicy(routePolicy2).to("file:outputfolder2");
-
 				from("file:inputfolder3?delete=true").routeId("3").routePolicy(routePolicy3).to("file:outputfolder3");
 			}
 
@@ -155,9 +177,9 @@ public class AkkaExecutorTests {
 		}
 
 		MemoryMonitor routeOnOffMonitor = new MemoryMonitor(200);
+		@SuppressWarnings("unused")
 		final BIPActor executorM = engine.register(routeOnOffMonitor, "monitor", true);
 
-		// engine.specifyGlue(bipGlue);
 		engine.start();
 
 		engine.execute();
@@ -176,11 +198,13 @@ public class AkkaExecutorTests {
 
 	}
 
-	// No asserts yet, just to see if the whole thing does not blow at
-	// initialization time and due to first few cycles.
+	/**
+	 * Creates five hanoi pegs with three disks each. The disks are moved around randomly. The pegs use data transfer.
+	 * 
+	 */
 	@SuppressWarnings("unused")
 	@Test
-	public void randomLargerHannoiWithDataTest() throws JAXBException, BIPException {
+	public void randomLargerHannoiWithDataTest() {
 
 		int size = 3;
 
@@ -195,7 +219,6 @@ public class AkkaExecutorTests {
 		BIPActor actor2 = engine.register(middleHanoiPeg, "MiddleHanoiPeg", false);
 
 		org.bip.spec.hanoi.HanoiPegWithData rightHanoiPeg = new org.bip.spec.hanoi.HanoiPegWithData(size, true);
-		// TODO, before with executors executor was using rightHanoiPeg.
 		BIPActor actor3 = engine.register(rightHanoiPeg, "RightHanoiPeg", false);
 
 		org.bip.spec.hanoi.HanoiPegWithData rightMiddleHanoiPeg = new org.bip.spec.hanoi.HanoiPegWithData(size, true);
@@ -204,7 +227,6 @@ public class AkkaExecutorTests {
 		org.bip.spec.hanoi.HanoiPegWithData leftMiddleHanoiPeg = new org.bip.spec.hanoi.HanoiPegWithData(size, false);
 		BIPActor actor5 = engine.register(leftMiddleHanoiPeg, "LeftMiddleHanoiPeg", false);
 
-		// engine.specifyGlue(bipGlue4Hanoi);
 		engine.start();
 
 		engine.execute();
@@ -226,15 +248,16 @@ public class AkkaExecutorTests {
 
 	}
 
-	// No asserts yet, just to see if the whole thing does not blow at
-	// initialization time and due to first few cycles.
+	/**
+	 * Creates three hanoi pegs with three disks each. The disks are moved around randomly. The pegs use data transfer.
+	 * 
+	 */
 	@Test
 	@SuppressWarnings("unused")
-	public void randomHannoiWithDataTest() throws JAXBException, BIPException {
+	public void randomHannoiWithDataTest() {
 
 		int size = 3;
 
-		// BIP engine.
 		BIPGlue bipGlue4Hanoi = new org.bip.spec.hanoi.HanoiRandomGlueBuilder().build();
 
 		BIPEngine engine = engineFactory.create("myEngine", bipGlue4Hanoi);
@@ -247,8 +270,6 @@ public class AkkaExecutorTests {
 
 		org.bip.spec.hanoi.HanoiPegWithData rightHanoiPeg = new org.bip.spec.hanoi.HanoiPegWithData(size, true);
 		BIPActor actor3 = engine.register(rightHanoiPeg, "RightHanoiPeg", false);
-
-		// engine.specifyGlue(bipGlue4Hanoi);
 
 		engine.start();
 
@@ -270,9 +291,12 @@ public class AkkaExecutorTests {
 
 	}
 
+	/**
+	 * Creates three hanoi pegs with 3 disks. Uses an optimal monitor for disk placement.
+	 */
 	@Test
 	@SuppressWarnings("unused")
-	public void hannoiWithDataTestSize3() throws JAXBException, BIPException {
+	public void hannoiWithDataTestSize3() {
 
 		BIPGlue bipGlue4Hanoi = new org.bip.spec.hanoi.HanoiOptimalGlueBuilder().build();
 
@@ -292,7 +316,6 @@ public class AkkaExecutorTests {
 		org.bip.spec.hanoi.RightHanoiPegWithData rightHanoiPeg = new org.bip.spec.hanoi.RightHanoiPegWithData(size);
 		BIPActor actor4 = engine.register(rightHanoiPeg, "RightHanoiPeg", false);
 
-		// engine.specifyGlue(bipGlue4Hanoi);
 		engine.start();
 
 		engine.execute();
@@ -314,9 +337,12 @@ public class AkkaExecutorTests {
 
 	}
 
+	/**
+	 * Creates three hanoi pegs with 8 disks. Uses an optimal monitor for disk placement.
+	 */
 	@Test
 	@SuppressWarnings("unused")
-	public void hannoiWithDataTestSize8() throws JAXBException, BIPException {
+	public void hannoiWithDataTestSize8() {
 
 		BIPGlue bipGlue4Hanoi = new org.bip.spec.hanoi.HanoiOptimalGlueBuilder().build();
 
@@ -336,7 +362,6 @@ public class AkkaExecutorTests {
 		org.bip.spec.hanoi.RightHanoiPegWithData rightHanoiPeg = new org.bip.spec.hanoi.RightHanoiPegWithData(size);
 		BIPActor actor4 = engine.register(rightHanoiPeg, "RightHanoiPeg", false);
 
-		// engine.specifyGlue(bipGlue4Hanoi);
 		engine.start();
 
 		engine.execute();
@@ -358,7 +383,10 @@ public class AkkaExecutorTests {
 
 	}
 
-	// It does not use data transfers but plenty of interactions and more ports.
+	/**
+	 * Creates three hanoi pegs with 3 disks. Uses some monitor for disk placement. No data transfer happening, but
+	 * plenty of interactions and more ports.
+	 */
 	@Test
 	@SuppressWarnings("unused")
 	public void hannoiNoDataSize3Test() {
@@ -381,7 +409,6 @@ public class AkkaExecutorTests {
 		RightHanoiPeg rightHanoiPeg = new RightHanoiPeg(size);
 		BIPActor actor4 = engine.register(rightHanoiPeg, "rightHanoi", false);
 
-		// engine.specifyGlue(bipGlue4Hanoi);
 		engine.start();
 
 		engine.execute();
@@ -403,6 +430,9 @@ public class AkkaExecutorTests {
 
 	}
 
+	/**
+	 * Creates three hanoi pegs with 8 disks. Uses some monitor for disk placement. No data transfer happening.
+	 */
 	@Test
 	@SuppressWarnings("unused")
 	public void hannoiNoDataSize8Test() {
@@ -471,15 +501,17 @@ public class AkkaExecutorTests {
 		BIPEngine engine = engineFactory.create("myEngine", bipGlue);
 
 		PSSComponent pssComponent = new PSSComponent(true);
+		@SuppressWarnings("unused")
 		BIPActor pssExecutor = engine.register(pssComponent, "pssCompE", true);
 
 		ComponentB bComponent = new ComponentB();
+		@SuppressWarnings("unused")
 		BIPActor bExecutor = engine.register(bComponent, "bCompE", true);
 
 		Consumer cComponent = new Consumer(100);
+		@SuppressWarnings("unused")
 		BIPActor cExecutor = engine.register(cComponent, "cCompE", true);
 
-		// engine.specifyGlue(bipGlue);
 		engine.start();
 
 		engine.execute();
@@ -516,11 +548,13 @@ public class AkkaExecutorTests {
 		Server server2 = new Server(2);
 		Server server3 = new Server(3);
 
+		@SuppressWarnings("unused")
 		final BIPActor executor1 = engine.register(server1, "1", true);
+		@SuppressWarnings("unused")
 		final BIPActor executor2 = engine.register(server2, "2", true);
+		@SuppressWarnings("unused")
 		final BIPActor executor3 = engine.register(server3, "3", true);
 
-		// engine.specifyGlue(bipGlue);
 		engine.start();
 		engine.execute();
 
@@ -535,6 +569,9 @@ public class AkkaExecutorTests {
 
 	}
 
+	/**
+	 * Test with two trackers and four peers.
+	 */
 	@Test
 	@SuppressWarnings("unused")
 	public void trackerPeerTest() {
@@ -558,7 +595,6 @@ public class AkkaExecutorTests {
 		final BIPActor executor2a = engine.register(peer2a, "21", true);
 		final BIPActor executor2b = engine.register(peer2b, "22", true);
 
-		// engine.specifyGlue(bipGlue);
 		engine.start();
 
 		engine.execute();
@@ -596,7 +632,6 @@ public class AkkaExecutorTests {
 		Consumer consumer = new Consumer(350);
 		BIPActor actor2 = engine.register(consumer, "consumer", true);
 
-		// engine.specifyGlue(bipGlue);
 		engine.start();
 
 		engine.execute();
@@ -628,12 +663,9 @@ public class AkkaExecutorTests {
 		ComponentC componentC = new ComponentC();
 
 		BIPActor executorA = engine.register(componentA, "compA", true);
-
 		BIPActor executorB = engine.register(componentB, "compB", true);
-
 		BIPActor executorC = engine.register(componentC, "compC", true);
 
-		// engine.specifyGlue(bipGlue);
 		engine.start();
 
 		engine.execute();
@@ -707,7 +739,6 @@ public class AkkaExecutorTests {
 		BIPActor executorSA = engine.register(slaveA, "slaveA", true);
 		BIPActor executorSB = engine.register(slaveB, "slaveB", true);
 
-		// engine.specifyGlue(bipGlue);
 		engine.start();
 
 		engine.execute();
@@ -727,6 +758,7 @@ public class AkkaExecutorTests {
 
 	}
 
+	@SuppressWarnings("unused")
 	@Test
 	public void philosopherwithDataTest() {
 
@@ -750,7 +782,6 @@ public class AkkaExecutorTests {
 		BIPActor p2E = engine.register(p2, "p2E", true);
 		BIPActor p3E = engine.register(p3, "p3E", true);
 
-		// engine.specifyGlue(bipGlue4Philosophers);
 		engine.start();
 
 		engine.execute();
@@ -792,8 +823,11 @@ public class AkkaExecutorTests {
 		TwoDataProvider1 componentB = new TwoDataProvider1();
 		TwoDataProvider2 componentC = new TwoDataProvider2();
 
+		@SuppressWarnings("unused")
 		final BIPActor executorA = engine.register(componentA, "compA", true);
+		@SuppressWarnings("unused")
 		final BIPActor executorB = engine.register(componentB, "compB", true);
+		@SuppressWarnings("unused")
 		final BIPActor executorC = engine.register(componentC, "compC", true);
 
 		// engine.specifyGlue(bipGlue);
@@ -855,9 +889,7 @@ public class AkkaExecutorTests {
 			@Override
 			public void configure() throws Exception {
 				from("file:inputfolder1?delete=true").routeId("1").routePolicy(routePolicy1).to("file:outputfolder1");
-
 				from("file:inputfolder2?delete=true").routeId("2").routePolicy(routePolicy2).to("file:outputfolder2");
-
 				from("file:inputfolder3?delete=true").routeId("3").routePolicy(routePolicy3).to("file:outputfolder3");
 			}
 
@@ -871,9 +903,9 @@ public class AkkaExecutorTests {
 		}
 
 		RouteOnOffMonitor routeOnOffMonitor = new RouteOnOffMonitor(2);
+		@SuppressWarnings("unused")
 		final BIPActor executorM = engine.register(routeOnOffMonitor, "monitor", true);
 
-		// engine.specifyGlue(bipGlue);
 		engine.start();
 
 		engine.execute();
