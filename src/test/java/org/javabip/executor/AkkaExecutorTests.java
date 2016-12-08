@@ -17,7 +17,7 @@
  * Author: Simon Bliudze, Anastasia Mavridou, Radoslaw Szymanek and Alina Zolotukhina
  */
 
-package org.bip.executor;
+package org.javabip.executor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -33,41 +33,41 @@ import org.apache.camel.Route;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.spi.RoutePolicy;
-import org.bip.api.BIPActor;
-import org.bip.api.BIPEngine;
-import org.bip.api.BIPGlue;
-import org.bip.engine.factory.EngineFactory;
-import org.bip.exceptions.BIPException;
-import org.bip.glue.GlueBuilder;
-import org.bip.glue.TwoSynchronGlueBuilder;
-import org.bip.spec.ComponentA;
-import org.bip.spec.ComponentB;
-import org.bip.spec.ComponentC;
-import org.bip.spec.Consumer;
-import org.bip.spec.Feeder;
-import org.bip.spec.InitialServer;
-import org.bip.spec.Master;
-import org.bip.spec.MemoryMonitor;
-import org.bip.spec.PSSComponent;
-import org.bip.spec.Peer;
-import org.bip.spec.RouteOnOffMonitor;
-import org.bip.spec.Server;
-import org.bip.spec.Slave;
-import org.bip.spec.SwitchableRouteDataTransfers;
-import org.bip.spec.SwitchableRouteErrorException;
-import org.bip.spec.Tracker;
-import org.bip.spec.TwoDataProvider1;
-import org.bip.spec.TwoDataProvider2;
-import org.bip.spec.TwoDataTaker;
-import org.bip.spec.diningphilosophers.DiningPhilosophersGlueBuilder;
-import org.bip.spec.diningphilosophers.Fork;
-import org.bip.spec.diningphilosophers.Philosophers;
-import org.bip.spec.hanoi.HanoiGlueBuilder;
-import org.bip.spec.hanoi.HanoiMonitor;
-import org.bip.spec.hanoi.HanoiOptimalMonitor;
-import org.bip.spec.hanoi.LeftHanoiPeg;
-import org.bip.spec.hanoi.MiddleHanoiPeg;
-import org.bip.spec.hanoi.RightHanoiPeg;
+import org.javabip.spec.ComponentA;
+import org.javabip.spec.ComponentB;
+import org.javabip.spec.ComponentC;
+import org.javabip.spec.Consumer;
+import org.javabip.spec.Feeder;
+import org.javabip.spec.InitialServer;
+import org.javabip.spec.Master;
+import org.javabip.spec.MemoryMonitor;
+import org.javabip.spec.PSSComponent;
+import org.javabip.spec.Peer;
+import org.javabip.spec.RouteOnOffMonitor;
+import org.javabip.spec.Server;
+import org.javabip.spec.Slave;
+import org.javabip.spec.SwitchableRouteDataTransfers;
+import org.javabip.spec.SwitchableRouteErrorException;
+import org.javabip.spec.Tracker;
+import org.javabip.spec.TwoDataProvider1;
+import org.javabip.spec.TwoDataProvider2;
+import org.javabip.spec.TwoDataTaker;
+import org.javabip.spec.diningphilosophers.DiningPhilosophersGlueBuilder;
+import org.javabip.spec.diningphilosophers.Fork;
+import org.javabip.spec.diningphilosophers.Philosophers;
+import org.javabip.spec.hanoi.HanoiGlueBuilder;
+import org.javabip.spec.hanoi.HanoiMonitor;
+import org.javabip.spec.hanoi.HanoiOptimalMonitor;
+import org.javabip.spec.hanoi.LeftHanoiPeg;
+import org.javabip.spec.hanoi.MiddleHanoiPeg;
+import org.javabip.spec.hanoi.RightHanoiPeg;
+import org.javabip.api.BIPActor;
+import org.javabip.api.BIPEngine;
+import org.javabip.api.BIPGlue;
+import org.javabip.engine.factory.EngineFactory;
+import org.javabip.exceptions.BIPException;
+import org.javabip.glue.GlueBuilder;
+import org.javabip.glue.TwoSynchronGlueBuilder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -208,23 +208,23 @@ public class AkkaExecutorTests {
 
 		int size = 3;
 
-		BIPGlue bipGlue4Hanoi = new org.bip.spec.hanoi.HanoiRandomGlueBuilder().build();
+		BIPGlue bipGlue4Hanoi = new org.javabip.spec.hanoi.HanoiRandomGlueBuilder().build();
 
 		BIPEngine engine = engineFactory.create("myEngine", bipGlue4Hanoi);
 
-		org.bip.spec.hanoi.HanoiPegWithData leftHanoiPeg = new org.bip.spec.hanoi.HanoiPegWithData(size, false);
+		org.javabip.spec.hanoi.HanoiPegWithData leftHanoiPeg = new org.javabip.spec.hanoi.HanoiPegWithData(size, false);
 		BIPActor actor1 = engine.register(leftHanoiPeg, "LeftHanoiPeg", false);
 
-		org.bip.spec.hanoi.HanoiPegWithData middleHanoiPeg = new org.bip.spec.hanoi.HanoiPegWithData(size, true);
+		org.javabip.spec.hanoi.HanoiPegWithData middleHanoiPeg = new org.javabip.spec.hanoi.HanoiPegWithData(size, true);
 		BIPActor actor2 = engine.register(middleHanoiPeg, "MiddleHanoiPeg", false);
 
-		org.bip.spec.hanoi.HanoiPegWithData rightHanoiPeg = new org.bip.spec.hanoi.HanoiPegWithData(size, true);
+		org.javabip.spec.hanoi.HanoiPegWithData rightHanoiPeg = new org.javabip.spec.hanoi.HanoiPegWithData(size, true);
 		BIPActor actor3 = engine.register(rightHanoiPeg, "RightHanoiPeg", false);
 
-		org.bip.spec.hanoi.HanoiPegWithData rightMiddleHanoiPeg = new org.bip.spec.hanoi.HanoiPegWithData(size, true);
+		org.javabip.spec.hanoi.HanoiPegWithData rightMiddleHanoiPeg = new org.javabip.spec.hanoi.HanoiPegWithData(size, true);
 		BIPActor actor4 = engine.register(rightMiddleHanoiPeg, "RightMiddleHanoiPeg", false);
 
-		org.bip.spec.hanoi.HanoiPegWithData leftMiddleHanoiPeg = new org.bip.spec.hanoi.HanoiPegWithData(size, false);
+		org.javabip.spec.hanoi.HanoiPegWithData leftMiddleHanoiPeg = new org.javabip.spec.hanoi.HanoiPegWithData(size, false);
 		BIPActor actor5 = engine.register(leftMiddleHanoiPeg, "LeftMiddleHanoiPeg", false);
 
 		engine.start();
@@ -258,17 +258,17 @@ public class AkkaExecutorTests {
 
 		int size = 3;
 
-		BIPGlue bipGlue4Hanoi = new org.bip.spec.hanoi.HanoiRandomGlueBuilder().build();
+		BIPGlue bipGlue4Hanoi = new org.javabip.spec.hanoi.HanoiRandomGlueBuilder().build();
 
 		BIPEngine engine = engineFactory.create("myEngine", bipGlue4Hanoi);
 
-		org.bip.spec.hanoi.HanoiPegWithData leftHanoiPeg = new org.bip.spec.hanoi.HanoiPegWithData(size, false);
+		org.javabip.spec.hanoi.HanoiPegWithData leftHanoiPeg = new org.javabip.spec.hanoi.HanoiPegWithData(size, false);
 		BIPActor actor1 = engine.register(leftHanoiPeg, "LeftHanoiPeg", false);
 
-		org.bip.spec.hanoi.HanoiPegWithData middleHanoiPeg = new org.bip.spec.hanoi.HanoiPegWithData(size, true);
+		org.javabip.spec.hanoi.HanoiPegWithData middleHanoiPeg = new org.javabip.spec.hanoi.HanoiPegWithData(size, true);
 		BIPActor actor2 = engine.register(middleHanoiPeg, "MiddleHanoiPeg", false);
 
-		org.bip.spec.hanoi.HanoiPegWithData rightHanoiPeg = new org.bip.spec.hanoi.HanoiPegWithData(size, true);
+		org.javabip.spec.hanoi.HanoiPegWithData rightHanoiPeg = new org.javabip.spec.hanoi.HanoiPegWithData(size, true);
 		BIPActor actor3 = engine.register(rightHanoiPeg, "RightHanoiPeg", false);
 
 		engine.start();
@@ -298,7 +298,7 @@ public class AkkaExecutorTests {
 	@SuppressWarnings("unused")
 	public void hannoiWithDataTestSize3() {
 
-		BIPGlue bipGlue4Hanoi = new org.bip.spec.hanoi.HanoiOptimalGlueBuilder().build();
+		BIPGlue bipGlue4Hanoi = new org.javabip.spec.hanoi.HanoiOptimalGlueBuilder().build();
 
 		BIPEngine engine = engineFactory.create("myEngine", bipGlue4Hanoi);
 
@@ -307,13 +307,13 @@ public class AkkaExecutorTests {
 		HanoiOptimalMonitor hanoiMonitor = new HanoiOptimalMonitor(size);
 		BIPActor actor1 = engine.register(hanoiMonitor, "hanoiMonitor", false);
 
-		org.bip.spec.hanoi.LeftHanoiPegWithData leftHanoiPeg = new org.bip.spec.hanoi.LeftHanoiPegWithData(size);
+		org.javabip.spec.hanoi.LeftHanoiPegWithData leftHanoiPeg = new org.javabip.spec.hanoi.LeftHanoiPegWithData(size);
 		BIPActor actor2 = engine.register(leftHanoiPeg, "LeftHanoiPeg", false);
 
-		org.bip.spec.hanoi.MiddleHanoiPegWithData middleHanoiPeg = new org.bip.spec.hanoi.MiddleHanoiPegWithData(size);
+		org.javabip.spec.hanoi.MiddleHanoiPegWithData middleHanoiPeg = new org.javabip.spec.hanoi.MiddleHanoiPegWithData(size);
 		BIPActor actor3 = engine.register(middleHanoiPeg, "MiddleHanoiPeg", false);
 
-		org.bip.spec.hanoi.RightHanoiPegWithData rightHanoiPeg = new org.bip.spec.hanoi.RightHanoiPegWithData(size);
+		org.javabip.spec.hanoi.RightHanoiPegWithData rightHanoiPeg = new org.javabip.spec.hanoi.RightHanoiPegWithData(size);
 		BIPActor actor4 = engine.register(rightHanoiPeg, "RightHanoiPeg", false);
 
 		engine.start();
@@ -344,7 +344,7 @@ public class AkkaExecutorTests {
 	@SuppressWarnings("unused")
 	public void hannoiWithDataTestSize8() {
 
-		BIPGlue bipGlue4Hanoi = new org.bip.spec.hanoi.HanoiOptimalGlueBuilder().build();
+		BIPGlue bipGlue4Hanoi = new org.javabip.spec.hanoi.HanoiOptimalGlueBuilder().build();
 
 		BIPEngine engine = engineFactory.create("myEngine", bipGlue4Hanoi);
 
@@ -353,13 +353,13 @@ public class AkkaExecutorTests {
 		HanoiOptimalMonitor hanoiMonitor = new HanoiOptimalMonitor(size);
 		BIPActor actor1 = engine.register(hanoiMonitor, "hanoiMonitor", false);
 
-		org.bip.spec.hanoi.LeftHanoiPegWithData leftHanoiPeg = new org.bip.spec.hanoi.LeftHanoiPegWithData(size);
+		org.javabip.spec.hanoi.LeftHanoiPegWithData leftHanoiPeg = new org.javabip.spec.hanoi.LeftHanoiPegWithData(size);
 		BIPActor actor2 = engine.register(leftHanoiPeg, "LeftHanoiPeg", false);
 
-		org.bip.spec.hanoi.MiddleHanoiPegWithData middleHanoiPeg = new org.bip.spec.hanoi.MiddleHanoiPegWithData(size);
+		org.javabip.spec.hanoi.MiddleHanoiPegWithData middleHanoiPeg = new org.javabip.spec.hanoi.MiddleHanoiPegWithData(size);
 		BIPActor actor3 = engine.register(middleHanoiPeg, "MiddleHanoiPeg", false);
 
-		org.bip.spec.hanoi.RightHanoiPegWithData rightHanoiPeg = new org.bip.spec.hanoi.RightHanoiPegWithData(size);
+		org.javabip.spec.hanoi.RightHanoiPegWithData rightHanoiPeg = new org.javabip.spec.hanoi.RightHanoiPegWithData(size);
 		BIPActor actor4 = engine.register(rightHanoiPeg, "RightHanoiPeg", false);
 
 		engine.start();
@@ -539,7 +539,7 @@ public class AkkaExecutorTests {
 
 		BIPEngine engine = engineFactory.create("myEngine", bipGlue);
 
-		// TODO, Why both Classes use the same specType org.bip.spec.Server? Would not this cause huge problems on
+		// TODO, Why both Classes use the same specType org.javabip.spec.Server? Would not this cause huge problems on
 		// engine side?
 		// or at least the second attempt to define type of the spec will be ignored? and thus all the components will
 		// actually have
@@ -830,7 +830,6 @@ public class AkkaExecutorTests {
 		@SuppressWarnings("unused")
 		final BIPActor executorC = engine.register(componentC, "compC", true);
 
-		// engine.specifyGlue(bipGlue);
 		engine.start();
 
 		engine.execute();

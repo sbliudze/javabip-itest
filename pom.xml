@@ -1,15 +1,15 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.bip</groupId>
-  <artifactId>org.bip.itest</artifactId>
+  <groupId>org.javabip</groupId>
+  <artifactId>org.javabip.itest</artifactId>
   <version>0.1.0-SNAPSHOT</version>
   
   <name>BIP :: Core :: Integration Tests</name>
 
 	<parent> 
-		<groupId>org.bip</groupId>
-		<artifactId>org.bip.parent</artifactId>
+		<groupId>org.javabip</groupId>
+		<artifactId>org.javabip.parent</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 	</parent>
 
@@ -35,8 +35,8 @@
 		<dependencies>
 
 			<dependency>
-				<groupId>org.bip</groupId>
-				<artifactId>org.bip.parent</artifactId>
+				<groupId>org.javabip</groupId>
+				<artifactId>org.javabip.parent</artifactId>
 				<version>0.1.0-SNAPSHOT</version>
 				<type>pom</type>
 				<scope>import</scope>
@@ -52,36 +52,36 @@
   <dependencies>
 
 	<dependency>
-		<groupId>org.bip</groupId>
-		<artifactId>org.bip.api</artifactId>
+		<groupId>org.javabip</groupId>
+		<artifactId>org.javabip.api</artifactId>
 		<scope>test</scope>
 	</dependency>
 
 	  <dependency>
-		  <groupId>org.bip.shared</groupId>
-		  <artifactId>org.bip.engine.api</artifactId>
+		  <groupId>org.javabip</groupId>
+		  <artifactId>org.javabip.engine.api</artifactId>
 	  </dependency>
 
 	  <dependency>
-		  <groupId>org.bip.shared</groupId>
-		  <artifactId>org.bip.engine.factory</artifactId>
+		  <groupId>org.javabip</groupId>
+		  <artifactId>org.javabip.engine.factory</artifactId>
 	  </dependency>
 
 	<dependency>
-		<groupId>org.bip</groupId>
-  		<artifactId>org.bip.executor.impl</artifactId>
+		<groupId>org.javabip</groupId>
+  		<artifactId>org.javabip.executor.impl</artifactId>
 	</dependency>
 
 	<dependency>
-		<groupId>org.bip</groupId>
-		<artifactId>org.bip.glue</artifactId>
+		<groupId>org.javabip</groupId>
+		<artifactId>org.javabip.glue</artifactId>
 		<scope>test</scope>
 	</dependency>
 
 
 	<dependency>
-		<groupId>org.bip</groupId>
-		<artifactId>org.bip.spec.examples</artifactId>
+		<groupId>org.javabip</groupId>
+		<artifactId>org.javabip.spec.examples</artifactId>
 		<scope>test</scope>
 	</dependency>
 
@@ -178,9 +178,9 @@
 				<artifactId>maven-surefire-plugin</artifactId>
 				<configuration>
 					<includes>
-   						<include>**/org/bip/executor/IntegrationTests.class</include>
- 						<include>**/org/bip/executor/AkkaExecutorTests.class</include>						
-		 				<include>**/org/bip/executor/AkkaRefactoredTests.class</include>
+   						<include>**/org/javabip/executor/IntegrationTests.class</include>
+ 						<include>**/org/javabip/executor/AkkaExecutorTests.class</include>						
+		 				<include>**/org/javabip/executor/AkkaRefactoredTests.class</include>
  					</includes>
 
 					<systemPropertyVariables>

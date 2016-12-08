@@ -16,7 +16,7 @@
  *
  * Author: Simon Bliudze, Anastasia Mavridou, Radoslaw Szymanek and Alina Zolotukhina
  */
-package org.bip.executor;
+package org.javabip.executor;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -35,24 +35,25 @@ import org.apache.camel.Route;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.spi.RoutePolicy;
-import org.bip.api.BIPActor;
-import org.bip.api.BIPEngine;
-import org.bip.api.BIPGlue;
-import org.bip.api.PortBase;
-import org.bip.api.PortType;
-import org.bip.engine.factory.EngineFactory;
-import org.bip.exceptions.BIPException;
-import org.bip.glue.GlueBuilder;
-import org.bip.glue.TwoSynchronGlueBuilder;
-import org.bip.spec.PComponent;
-import org.bip.spec.PResizableBehaviorComponent;
-import org.bip.spec.PSSComponent;
-import org.bip.spec.QComponent;
-import org.bip.spec.RComponent;
-import org.bip.spec.RouteOnOffMonitor;
-import org.bip.spec.SwitchableRoute;
-import org.bip.spec.SwitchableRouteExecutableBehavior;
-import org.bip.spec.TestSpecEnforceableSpontaneous;
+import org.javabip.spec.PComponent;
+import org.javabip.spec.PResizableBehaviorComponent;
+import org.javabip.spec.PSSComponent;
+import org.javabip.spec.QComponent;
+import org.javabip.spec.RComponent;
+import org.javabip.spec.RouteOnOffMonitor;
+import org.javabip.spec.SwitchableRoute;
+import org.javabip.spec.SwitchableRouteExecutableBehavior;
+import org.javabip.spec.TestSpecEnforceableSpontaneous;
+import org.javabip.api.BIPActor;
+import org.javabip.api.BIPEngine;
+import org.javabip.api.BIPGlue;
+import org.javabip.api.PortBase;
+import org.javabip.api.PortType;
+import org.javabip.engine.factory.EngineFactory;
+import org.javabip.exceptions.BIPException;
+import org.javabip.executor.PortImpl;
+import org.javabip.glue.GlueBuilder;
+import org.javabip.glue.TwoSynchronGlueBuilder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -208,8 +209,19 @@ public class IntegrationTests {
 		 * The classical Switchable Routes example with three routes and one monitor, without data transfer,
 		 * specification through provided behaviour.
 		 */
+		
+		BIPGlue bipGlue = new TwoSynchronGlueBuilder() {
+			@Override
+			public void configure() {
 
-		BIPGlue bipGlue = createGlue("src/test/resources/bipGlueExecutableBehaviour.xml");
+				synchron(SwitchableRouteExecutableBehavior.class, "on").to(RouteOnOffMonitor.class, "add");
+				synchron(SwitchableRouteExecutableBehavior.class, "finished").to(RouteOnOffMonitor.class, "rm");
+
+				port(SwitchableRouteExecutableBehavior.class, "off").acceptsNothing();
+				port(SwitchableRouteExecutableBehavior.class, "off").requiresNothing();
+
+			}
+		}.build();
 
 		BIPEngine engine = engineFactory.create("myEngine", bipGlue);
 

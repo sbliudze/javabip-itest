@@ -16,12 +16,12 @@
  *
  * Author: Simon Bliudze, Anastasia Mavridou, Radoslaw Szymanek and Alina Zolotukhina
  */
-package org.bip.executor;
+package org.javabip.executor;
 
-import org.bip.api.Accept;
-import org.bip.api.BIPGlue;
-import org.bip.api.DataWire;
-import org.bip.api.Require;
+import org.javabip.api.Accept;
+import org.javabip.api.BIPGlue;
+import org.javabip.api.DataWire;
+import org.javabip.api.Require;
 
 import java.io.OutputStream;
 import java.util.ArrayList;

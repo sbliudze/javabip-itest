@@ -2,78 +2,78 @@
 <glue>
     <accepts>
         <accept>
-            <effect id="on" specType="org.bip.spec.SwitchableRouteExecutableBehavior"/>
+            <effect id="on" specType="org.javabip.spec.SwitchableRouteExecutableBehavior"/>
             <causes>
-                 <port id="add" specType="org.bip.spec.RouteOnOffMonitor"/>
+                 <port id="add" specType="org.javabip.spec.RouteOnOffMonitor"/>
             </causes>
         </accept>
         <accept>
-            <effect id="finished" specType="org.bip.spec.SwitchableRouteExecutableBehavior"/>
+            <effect id="finished" specType="org.javabip.spec.SwitchableRouteExecutableBehavior"/>
             <causes>
-                <port id="rm" specType="org.bip.spec.RouteOnOffMonitor"/>
+                <port id="rm" specType="org.javabip.spec.RouteOnOffMonitor"/>
             </causes>
         </accept>
  	<accept>
-            <effect id="add" specType="org.bip.spec.RouteOnOffMonitor"/>
+            <effect id="add" specType="org.javabip.spec.RouteOnOffMonitor"/>
             <causes>
-                  <port id="on" specType="org.bip.spec.SwitchableRouteExecutableBehavior"/>
+                  <port id="on" specType="org.javabip.spec.SwitchableRouteExecutableBehavior"/>
             </causes>
         </accept>
         <accept>
-            <effect id="rm" specType="org.bip.spec.RouteOnOffMonitor"/>
+            <effect id="rm" specType="org.javabip.spec.RouteOnOffMonitor"/>
             <causes>
-                <port id="finished" specType="org.bip.spec.SwitchableRouteExecutableBehavior"/>
+                <port id="finished" specType="org.javabip.spec.SwitchableRouteExecutableBehavior"/>
             </causes>
         </accept>
         <accept>
-            <effect id="off" specType="org.bip.spec.SwitchableRouteExecutableBehavior"/>
+            <effect id="off" specType="org.javabip.spec.SwitchableRouteExecutableBehavior"/>
             <causes>
             </causes>
         </accept>
     </accepts>
     <requires>
           <require>
-            <effect id="on" specType="org.bip.spec.SwitchableRouteExecutableBehavior"/>
+            <effect id="on" specType="org.javabip.spec.SwitchableRouteExecutableBehavior"/>
             <causes>
                 <option>
                     <causes>
-                        <port id="add" specType="org.bip.spec.RouteOnOffMonitor"/>
+                        <port id="add" specType="org.javabip.spec.RouteOnOffMonitor"/>
                     </causes>
                 </option>
             </causes>
         </require>
         <require>
-            <effect id="finished" specType="org.bip.spec.SwitchableRouteExecutableBehavior"/>
+            <effect id="finished" specType="org.javabip.spec.SwitchableRouteExecutableBehavior"/>
             <causes>
                 <option>
                     <causes>
-                        <port id="rm" specType="org.bip.spec.RouteOnOffMonitor"/>
+                        <port id="rm" specType="org.javabip.spec.RouteOnOffMonitor"/>
                     </causes>
                 </option>
             </causes>
         </require>
         <require>
-            <effect id="add" specType="org.bip.spec.RouteOnOffMonitor"/>
+            <effect id="add" specType="org.javabip.spec.RouteOnOffMonitor"/>
             <causes>
                 <option>
                     <causes>
-                        <port id="on" specType="org.bip.spec.SwitchableRouteExecutableBehavior"/>
+                        <port id="on" specType="org.javabip.spec.SwitchableRouteExecutableBehavior"/>
                     </causes>
                 </option>
             </causes>
         </require>
         <require>
-            <effect id="rm" specType="org.bip.spec.RouteOnOffMonitor"/>
+            <effect id="rm" specType="org.javabip.spec.RouteOnOffMonitor"/>
             <causes>
                 <option>
                     <causes>
-                        <port id="finished" specType="org.bip.spec.SwitchableRouteExecutableBehavior"/>
+                        <port id="finished" specType="org.javabip.spec.SwitchableRouteExecutableBehavior"/>
                     </causes>
                 </option>
             </causes>
         </require>
         <require>
-            <effect id="off" specType="org.bip.spec.SwitchableRouteExecutableBehavior"/>
+            <effect id="off" specType="org.javabip.spec.SwitchableRouteExecutableBehavior"/>
             <causes>
                 <option>
                     <causes>

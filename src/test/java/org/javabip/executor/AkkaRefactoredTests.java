@@ -17,7 +17,7 @@
  * Author: Simon Bliudze, Anastasia Mavridou, Radoslaw Szymanek and Alina Zolotukhina
  */
 
-package org.bip.executor;
+package org.javabip.executor;
 
 import static org.junit.Assert.assertEquals;
 
@@ -27,25 +27,28 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.bip.api.BIPActor;
-import org.bip.api.BIPEngine;
-import org.bip.api.BIPGlue;
-import org.bip.api.OrchestratedExecutor;
-import org.bip.engine.factory.EngineFactory;
-import org.bip.exceptions.BIPException;
-import org.bip.executor.impl.akka.OrchestratedExecutorFactory;
-import org.bip.glue.GlueBuilder;
-import org.bip.glue.TwoSynchronGlueBuilder;
-import org.bip.spec.ComponentAWithEnvData;
-import org.bip.spec.ComponentAWithEnvDataInterface;
-import org.bip.spec.ComponentB;
-import org.bip.spec.ComponentC;
-import org.bip.spec.MemoryMonitor;
-import org.bip.spec.ProperComponentAWithEnvData;
-import org.bip.spec.SwitchableRouteDataTransfers;
-import org.bip.spec.seal.SealableData;
-import org.bip.spec.seal.SealableDataReader;
-import org.bip.spec.seal.SealableDataWriter;
+import org.javabip.spec.ComponentAWithEnvData;
+import org.javabip.spec.ComponentAWithEnvDataInterface;
+import org.javabip.spec.ComponentB;
+import org.javabip.spec.ComponentC;
+import org.javabip.spec.MemoryMonitor;
+import org.javabip.spec.ProperComponentAWithEnvData;
+import org.javabip.spec.SwitchableRouteDataTransfers;
+import org.javabip.spec.seal.SealableData;
+import org.javabip.spec.seal.SealableDataReader;
+import org.javabip.spec.seal.SealableDataWriter;
+import org.javabip.api.BIPActor;
+import org.javabip.api.BIPEngine;
+import org.javabip.api.BIPGlue;
+import org.javabip.api.OrchestratedExecutor;
+import org.javabip.engine.factory.EngineFactory;
+import org.javabip.exceptions.BIPException;
+import org.javabip.executor.ExecutorHandler;
+import org.javabip.executor.ExecutorKernel;
+import org.javabip.executor.TunellingExecutorHandler;
+import org.javabip.executor.impl.akka.OrchestratedExecutorFactory;
+import org.javabip.glue.GlueBuilder;
+import org.javabip.glue.TwoSynchronGlueBuilder;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
