@@ -46,7 +46,6 @@ import org.javabip.exceptions.BIPException;
 import org.javabip.executor.ExecutorHandler;
 import org.javabip.executor.ExecutorKernel;
 import org.javabip.executor.TunellingExecutorHandler;
-import org.javabip.executor.impl.akka.OrchestratedExecutorFactory;
 import org.javabip.glue.GlueBuilder;
 import org.javabip.glue.TwoSynchronGlueBuilder;
 import org.junit.After;
@@ -61,14 +60,12 @@ import akka.japi.Creator;
 public class AkkaRefactoredTests {
 
 	ActorSystem system;
-	OrchestratedExecutorFactory factory;
 	EngineFactory engineFactory;
 
 	@Before
 	public void initialize() {
 
 		system = ActorSystem.create("MySystem");
-		factory = new OrchestratedExecutorFactory(system);
 		engineFactory = new EngineFactory(system);
 
 	}
