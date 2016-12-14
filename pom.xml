@@ -13,14 +13,6 @@
 		<version>0.1.0-SNAPSHOT</version>
 	</parent>
 
-	<!-- TODO change to github -->
-	<scm>
-		<developerConnection>scm:git:git@git.xtech.io:bip/org.bip.itests.git</developerConnection>
-		<url>https://git.xtech.io/bip/org.bip.itests</url>
-		<tag>HEAD</tag>
-	</scm>
-
-
 	<description>It contains integration tests</description>
 
     <properties>
