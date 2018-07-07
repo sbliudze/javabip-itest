@@ -35,15 +35,7 @@ import org.apache.camel.Route;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.spi.RoutePolicy;
-import org.javabip.spec.PComponent;
-import org.javabip.spec.PResizableBehaviorComponent;
-import org.javabip.spec.PSSComponent;
-import org.javabip.spec.QComponent;
-import org.javabip.spec.RComponent;
-import org.javabip.spec.RouteOnOffMonitor;
-import org.javabip.spec.SwitchableRoute;
-import org.javabip.spec.SwitchableRouteExecutableBehavior;
-import org.javabip.spec.TestSpecEnforceableSpontaneous;
+import org.javabip.spec.*;
 import org.javabip.api.BIPActor;
 import org.javabip.api.BIPEngine;
 import org.javabip.api.BIPGlue;
@@ -133,6 +125,12 @@ public class IntegrationTests {
 				synchron(SwitchableRoute.class, "on").to(RouteOnOffMonitor.class, "add");
 				synchron(SwitchableRoute.class, "finished").to(RouteOnOffMonitor.class, "rm");
 
+//				port(SwitchableRoute.class, "on").acceptsNothing();
+//				port(SwitchableRoute.class, "on").requiresNothing();
+//
+//				port(SwitchableRoute.class, "finished").acceptsNothing();
+//				port(SwitchableRoute.class, "finished").requiresNothing();
+
 				port(SwitchableRoute.class, "off").acceptsNothing();
 				port(SwitchableRoute.class, "off").requiresNothing();
 
@@ -144,16 +142,19 @@ public class IntegrationTests {
 		SwitchableRoute route1 = new SwitchableRoute("1");
 		SwitchableRoute route2 = new SwitchableRoute("2");
 		SwitchableRoute route3 = new SwitchableRoute("3");
+		SwitchableRoute route4 = new SwitchableRoute("4");
 		RouteOnOffMonitor routeOnOffMonitor = new RouteOnOffMonitor(2);
 
 		CamelContext camelContext = new DefaultCamelContext();
 		route1.setCamelContext(camelContext);
 		route2.setCamelContext(camelContext);
 		route3.setCamelContext(camelContext);
+		route4.setCamelContext(camelContext);
 
 		final BIPActor executor1 = engine.register(route1, "1", true);
 		final BIPActor executor2 = engine.register(route2, "2", true);
 		final BIPActor executor3 = engine.register(route3, "3", true);
+		final BIPActor executor4 = engine.register(route4, "4", true);
 
 		@SuppressWarnings("unused")
 		final BIPActor executorM = engine.register(routeOnOffMonitor, "monitor", true);
@@ -161,16 +162,19 @@ public class IntegrationTests {
 		final RoutePolicy routePolicy1 = createRoutePolicy(executor1);
 		final RoutePolicy routePolicy2 = createRoutePolicy(executor2);
 		final RoutePolicy routePolicy3 = createRoutePolicy(executor3);
+		final RoutePolicy routePolicy4 = createRoutePolicy(executor4);
 
 		RouteBuilder builder = new RouteBuilder() {
 
 			@Override
 			public void configure() throws Exception {
-				from("file:inputfolder1?delete=true").routeId("1").routePolicy(routePolicy1).to("file:outputfolder1");
+				from("file:inputfolder1?delete=true").routeId("1").routePolicy(routePolicy1).to("file:inputfolder2");
 
-				from("file:inputfolder2?delete=true").routeId("2").routePolicy(routePolicy2).to("file:outputfolder2");
+				from("file:inputfolder2?delete=true").routeId("2").routePolicy(routePolicy2).to("file:inputfolder3");
 
-				from("file:inputfolder3?delete=true").routeId("3").routePolicy(routePolicy3).to("file:outputfolder3");
+				from("file:inputfolder3?delete=true").routeId("3").routePolicy(routePolicy3).to("file:inputfolder4");
+
+				from("file:inputfolder4?delete=true").routeId("4").routePolicy(routePolicy4).to("file:inputfolder1");
 			}
 		};
 		camelContext.setAutoStartup(false);
@@ -191,13 +195,36 @@ public class IntegrationTests {
 			e.printStackTrace();
 		}
 
+		executorM.inform("switch");
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		while (!(executorM.getState().equals("0"))) {}
+
+//		try {
+//            camelContext.suspendRoute("1");
+//            camelContext.suspendRoute("2");
+//            camelContext.suspendRoute("3");
+//            camelContext.suspendRoute("4");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+
 		engine.stop();
 		engineFactory.destroy(engine);
+
+        System.out.println(route1.noOfEnforcedTransitions);
+        System.out.println(route2.noOfEnforcedTransitions);
+        System.out.println(route3.noOfEnforcedTransitions);
+		System.out.println(route4.noOfEnforcedTransitions);
 
 		assertTrue("Route 1 has not made any transitions", route1.noOfEnforcedTransitions > 0);
 		assertTrue("Route 2 has not made any transitions", route2.noOfEnforcedTransitions > 0);
 		assertTrue("Route 3 has not made any transitions", route3.noOfEnforcedTransitions > 0);
-
+		assertTrue("Route 4 has not made any transitions", route4.noOfEnforcedTransitions > 0);
 	}
 
 	@Test
