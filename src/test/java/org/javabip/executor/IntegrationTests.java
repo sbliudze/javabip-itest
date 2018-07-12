@@ -178,6 +178,7 @@ public class IntegrationTests {
 			}
 		};
 		camelContext.setAutoStartup(false);
+
 		try {
 			camelContext.addRoutes(builder);
 			camelContext.start();
@@ -196,22 +197,8 @@ public class IntegrationTests {
 		}
 
 		executorM.inform("switch");
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
 
 		while (!(executorM.getState().equals("0"))) {}
-
-//		try {
-//            camelContext.suspendRoute("1");
-//            camelContext.suspendRoute("2");
-//            camelContext.suspendRoute("3");
-//            camelContext.suspendRoute("4");
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
 
 		engine.stop();
 		engineFactory.destroy(engine);
