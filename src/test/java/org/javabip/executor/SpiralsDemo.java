@@ -170,7 +170,7 @@ public class SpiralsDemo {
         engine.start();
         engine.execute();
 
-        // Let the system run for 5 seconds to allow some transitions to be fired
+        // Let the system run for some seconds to allow some transitions to be fired
         try {
             Thread.sleep(20000);
         } catch (InterruptedException e) {
@@ -273,7 +273,7 @@ public class SpiralsDemo {
 
         // Let the system run for 20 seconds
         try {
-            Thread.sleep(2000);
+            Thread.sleep(20000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -386,27 +386,27 @@ public class SpiralsDemo {
            (1 -> 2 -> 3 -> 4)*
            only the 1st can start, only the 4th can finish
          */
-//        demo.CoordinatedWithIds(new RouteStarter(), new TwoSynchronGlueBuilder(){
-//            @Override
-//            public void configure() {
-//                synchron(SwitchableRoute1.class, "on").to(SwitchableRoute4.class, "finished");
-//                synchron(SwitchableRoute2.class, "on").to(SwitchableRoute1.class, "finished");
-//                synchron(SwitchableRoute3.class, "on").to(SwitchableRoute2.class, "finished");
-//                synchron(SwitchableRoute4.class, "on").to(SwitchableRoute3.class, "finished");
-//
-//                synchron(SwitchableRoute1.class, "on").to(RouteStarter.class, "add");
-//                synchron(SwitchableRoute4.class, "finished").to(RouteStarter.class, "rm");
-//
-//                port(SwitchableRoute1.class, "off").acceptsNothing();
-//                port(SwitchableRoute1.class, "off").requiresNothing();
-//                port(SwitchableRoute2.class, "off").acceptsNothing();
-//                port(SwitchableRoute2.class, "off").requiresNothing();
-//                port(SwitchableRoute3.class, "off").acceptsNothing();
-//                port(SwitchableRoute3.class, "off").requiresNothing();
-//                port(SwitchableRoute4.class, "off").acceptsNothing();
-//                port(SwitchableRoute4.class, "off").requiresNothing();
-//            }
-//        }.build());
+        demo.CoordinatedWithIds(new RouteStarter(), new TwoSynchronGlueBuilder(){
+            @Override
+            public void configure() {
+                synchron(SwitchableRoute1.class, "on").to(SwitchableRoute4.class, "finished");
+                synchron(SwitchableRoute2.class, "on").to(SwitchableRoute1.class, "finished");
+                synchron(SwitchableRoute3.class, "on").to(SwitchableRoute2.class, "finished");
+                synchron(SwitchableRoute4.class, "on").to(SwitchableRoute3.class, "finished");
+
+                synchron(SwitchableRoute1.class, "on").to(RouteStarter.class, "add");
+                synchron(SwitchableRoute4.class, "finished").to(RouteStarter.class, "rm");
+
+                port(SwitchableRoute1.class, "off").acceptsNothing();
+                port(SwitchableRoute1.class, "off").requiresNothing();
+                port(SwitchableRoute2.class, "off").acceptsNothing();
+                port(SwitchableRoute2.class, "off").requiresNothing();
+                port(SwitchableRoute3.class, "off").acceptsNothing();
+                port(SwitchableRoute3.class, "off").requiresNothing();
+                port(SwitchableRoute4.class, "off").acceptsNothing();
+                port(SwitchableRoute4.class, "off").requiresNothing();
+            }
+        }.build());
 
         /* Similar to the previous one, but the routes operate by pairs:
            (1 3 -> 2 4)*
@@ -450,19 +450,19 @@ public class SpiralsDemo {
 //            }
 //        }.build());
 
-        demo.Coordinated(new RouteOnOffMonitorWithData(), new ManySynchronGlueBuilder(){
-            @Override
-            public void configure(){
-                synchrons(SwitchableRoute.class, "on", RouteOnOffMonitorWithData.class, "add");
-                synchrons(SwitchableRoute.class, "finished", RouteOnOffMonitorWithData.class, "rm");
-
-                port(SwitchableRoute.class, "off").acceptsNothing();
-                port(SwitchableRoute.class, "off").requiresNothing();
-
-                data(SwitchableRoute.class, "id").to(RouteOnOffMonitorWithData.class, "routeId");
-            }
-
-        }.build());
+//        demo.Coordinated(new RouteOnOffMonitorWithData(), new ManySynchronGlueBuilder(){
+//            @Override
+//            public void configure(){
+//                synchrons(SwitchableRoute.class, "on", RouteOnOffMonitorWithData.class, "add");
+//                synchrons(SwitchableRoute.class, "finished", RouteOnOffMonitorWithData.class, "rm");
+//
+//                port(SwitchableRoute.class, "off").acceptsNothing();
+//                port(SwitchableRoute.class, "off").requiresNothing();
+//
+//                data(SwitchableRoute.class, "id").to(RouteOnOffMonitorWithData.class, "routeId");
+//            }
+//
+//        }.build());
 
         demo.cleanup();
     }
