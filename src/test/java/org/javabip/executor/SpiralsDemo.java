@@ -74,13 +74,13 @@ public class SpiralsDemo {
 
             @Override
             public void configure() {
-                from("file:inputfolder1?delete=true").routeId("1").to("file:inputfolder2");
+                from("file:/Users/bliudze/inputfolders/1?delete=true").routeId("1").to("file:/Users/bliudze/inputfolders/2");
 
-                from("file:inputfolder2?delete=true").routeId("2").to("file:inputfolder3");
+                from("file:/Users/bliudze/inputfolders/2?delete=true").routeId("2").to("file:/Users/bliudze/inputfolders/3");
 
-                from("file:inputfolder3?delete=true").routeId("3").to("file:inputfolder4");
+                from("file:/Users/bliudze/inputfolders/3?delete=true").routeId("3").to("file:/Users/bliudze/inputfolders/4");
 
-                from("file:inputfolder4?delete=true").routeId("4").to("file:inputfolder1");
+                from("file:/Users/bliudze/inputfolders/4?delete=true").routeId("4").to("file:/Users/bliudze/inputfolders/1");
             }
         };
 
@@ -147,13 +147,13 @@ public class SpiralsDemo {
         RouteBuilder builder = new RouteBuilder() {
             @Override
             public void configure() {
-                from("file:inputfolder1?delete=true").routeId("1").routePolicy(routePolicy1).to("file:inputfolder2");
+                from("file:/Users/bliudze/inputfolders/1?delete=true").routeId("1").routePolicy(routePolicy1).to("file:/Users/bliudze/inputfolders/2");
 
-                from("file:inputfolder2?delete=true").routeId("2").routePolicy(routePolicy2).to("file:inputfolder3");
+                from("file:/Users/bliudze/inputfolders/2?delete=true").routeId("2").routePolicy(routePolicy2).to("file:/Users/bliudze/inputfolders/3");
 
-                from("file:inputfolder3?delete=true").routeId("3").routePolicy(routePolicy3).to("file:inputfolder4");
+                from("file:/Users/bliudze/inputfolders/3?delete=true").routeId("3").routePolicy(routePolicy3).to("file:/Users/bliudze/inputfolders/4");
 
-                from("file:inputfolder4?delete=true").routeId("4").routePolicy(routePolicy4).to("file:inputfolder1");
+                from("file:/Users/bliudze/inputfolders/4?delete=true").routeId("4").routePolicy(routePolicy4).to("file:/Users/bliudze/inputfolders/1");
             }
         };
         camelContext.setAutoStartup(false);
@@ -171,39 +171,39 @@ public class SpiralsDemo {
         engine.execute();
 
         // Let the system run for some seconds to allow some transitions to be fired
-        try {
-            Thread.sleep(20000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        // If there is a monitor, tell it to forbid turning routes on
-        //      and wait for all of them to be suspended
-        // Else suspend them manually
-        if (executorM != null) {
-            executorM.inform("switch");
-
-            while (!(executorM.getState().equals("0"))) {
-                try {
-                    Thread.sleep (100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        } else {
-            try {
-                camelContext.suspendRoute("1");
-                camelContext.suspendRoute("2");
-                camelContext.suspendRoute("3");
-                camelContext.suspendRoute("4");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-        // Stop the BIP engine
-        engine.stop();
-        engineFactory.destroy(engine);
+//        try {
+//            Thread.sleep(20000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//
+//        // If there is a monitor, tell it to forbid turning routes on
+//        //      and wait for all of them to be suspended
+//        // Else suspend them manually
+//        if (executorM != null) {
+//            executorM.inform("switch");
+//
+//            while (!(executorM.getState().equals("0"))) {
+//                try {
+//                    Thread.sleep (100);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        } else {
+//            try {
+//                camelContext.suspendRoute("1");
+//                camelContext.suspendRoute("2");
+//                camelContext.suspendRoute("3");
+//                camelContext.suspendRoute("4");
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
+//
+//        // Stop the BIP engine
+//        engine.stop();
+//        engineFactory.destroy(engine);
     }
 
     private void CoordinatedWithIds (Object monitor, BIPGlue bipGlue) {
@@ -248,13 +248,13 @@ public class SpiralsDemo {
         RouteBuilder builder = new RouteBuilder() {
             @Override
             public void configure() {
-                from("file:inputfolder1?delete=true").routeId("1").routePolicy(routePolicy1).to("file:inputfolder2");
+                from("file:/Users/bliudze/inputfolders/1?delete=true").routeId("1").routePolicy(routePolicy1).to("file:/Users/bliudze/inputfolders/2");
 
-                from("file:inputfolder2?delete=true").routeId("2").routePolicy(routePolicy2).to("file:inputfolder3");
+                from("file:/Users/bliudze/inputfolders/2?delete=true").routeId("2").routePolicy(routePolicy2).to("file:/Users/bliudze/inputfolders/3");
 
-                from("file:inputfolder3?delete=true").routeId("3").routePolicy(routePolicy3).to("file:inputfolder4");
+                from("file:/Users/bliudze/inputfolders/3?delete=true").routeId("3").routePolicy(routePolicy3).to("file:/Users/bliudze/inputfolders/4");
 
-                from("file:inputfolder4?delete=true").routeId("4").routePolicy(routePolicy4).to("file:inputfolder1");
+                from("file:/Users/bliudze/inputfolders/4?delete=true").routeId("4").routePolicy(routePolicy4).to("file:/Users/bliudze/inputfolders/1");
             }
         };
         camelContext.setAutoStartup(false);
@@ -386,27 +386,27 @@ public class SpiralsDemo {
            (1 -> 2 -> 3 -> 4)*
            only the 1st can start, only the 4th can finish
          */
-        demo.CoordinatedWithIds(new RouteStarter(), new TwoSynchronGlueBuilder(){
-            @Override
-            public void configure() {
-                synchron(SwitchableRoute1.class, "on").to(SwitchableRoute4.class, "finished");
-                synchron(SwitchableRoute2.class, "on").to(SwitchableRoute1.class, "finished");
-                synchron(SwitchableRoute3.class, "on").to(SwitchableRoute2.class, "finished");
-                synchron(SwitchableRoute4.class, "on").to(SwitchableRoute3.class, "finished");
-
-                synchron(SwitchableRoute1.class, "on").to(RouteStarter.class, "add");
-                synchron(SwitchableRoute4.class, "finished").to(RouteStarter.class, "rm");
-
-                port(SwitchableRoute1.class, "off").acceptsNothing();
-                port(SwitchableRoute1.class, "off").requiresNothing();
-                port(SwitchableRoute2.class, "off").acceptsNothing();
-                port(SwitchableRoute2.class, "off").requiresNothing();
-                port(SwitchableRoute3.class, "off").acceptsNothing();
-                port(SwitchableRoute3.class, "off").requiresNothing();
-                port(SwitchableRoute4.class, "off").acceptsNothing();
-                port(SwitchableRoute4.class, "off").requiresNothing();
-            }
-        }.build());
+//        demo.CoordinatedWithIds(new RouteStarter(), new TwoSynchronGlueBuilder(){
+//            @Override
+//            public void configure() {
+//                synchron(SwitchableRoute1.class, "on").to(SwitchableRoute4.class, "finished");
+//                synchron(SwitchableRoute2.class, "on").to(SwitchableRoute1.class, "finished");
+//                synchron(SwitchableRoute3.class, "on").to(SwitchableRoute2.class, "finished");
+//                synchron(SwitchableRoute4.class, "on").to(SwitchableRoute3.class, "finished");
+//
+//                synchron(SwitchableRoute1.class, "on").to(RouteStarter.class, "add");
+//                synchron(SwitchableRoute4.class, "finished").to(RouteStarter.class, "rm");
+//
+//                port(SwitchableRoute1.class, "off").acceptsNothing();
+//                port(SwitchableRoute1.class, "off").requiresNothing();
+//                port(SwitchableRoute2.class, "off").acceptsNothing();
+//                port(SwitchableRoute2.class, "off").requiresNothing();
+//                port(SwitchableRoute3.class, "off").acceptsNothing();
+//                port(SwitchableRoute3.class, "off").requiresNothing();
+//                port(SwitchableRoute4.class, "off").acceptsNothing();
+//                port(SwitchableRoute4.class, "off").requiresNothing();
+//            }
+//        }.build());
 
         /* Similar to the previous one, but the routes operate by pairs:
            (1 3 -> 2 4)*
@@ -450,21 +450,21 @@ public class SpiralsDemo {
 //            }
 //        }.build());
 
-//        demo.Coordinated(new RouteOnOffMonitorWithData(), new ManySynchronGlueBuilder(){
-//            @Override
-//            public void configure(){
-//                synchrons(SwitchableRoute.class, "on", RouteOnOffMonitorWithData.class, "add");
-//                synchrons(SwitchableRoute.class, "finished", RouteOnOffMonitorWithData.class, "rm");
-//
-//                port(SwitchableRoute.class, "off").acceptsNothing();
-//                port(SwitchableRoute.class, "off").requiresNothing();
-//
-//                data(SwitchableRoute.class, "id").to(RouteOnOffMonitorWithData.class, "routeId");
-//            }
-//
-//        }.build());
+        demo.Coordinated(new RouteOnOffMonitorWithData(), new ManySynchronGlueBuilder(){
+            @Override
+            public void configure(){
+                synchrons(SwitchableRoute.class, "on", RouteOnOffMonitorWithData.class, "add");
+                synchrons(SwitchableRoute.class, "finished", RouteOnOffMonitorWithData.class, "rm");
 
-        demo.cleanup();
+                port(SwitchableRoute.class, "off").acceptsNothing();
+                port(SwitchableRoute.class, "off").requiresNothing();
+
+                data(SwitchableRoute.class, "id").to(RouteOnOffMonitorWithData.class, "routeId");
+            }
+
+        }.build());
+
+//        demo.cleanup();
     }
 
 }
